@@ -9,10 +9,14 @@ from binance_f.model.constant import *
 from datetime import datetime
 from decimal import *
 from decimal import Decimal
+from flask import Flask
+from flask_cors import CORS
 import  math
 import time
+
 import logging
 
+app = Flask(__name__)
 
 g_api_key = '1fd892fecd57b6a765bb6ee3cfca2376a34aafe8dccf898b27f27e54f54674f9'
 g_secret_key = 'ad53106d7c3cdb2431641f657984133a0e22c475331037493520f1c061ba7154'
@@ -273,8 +277,15 @@ class back_test_strategy:
             self.post_order(0,(self.minimalCoinBuy * pow(2, self.tradeCounter)))
             self.testCounter = self.testCounter + 1
 
+
+def main():
+    port = int(os.environ.get("PORT",5000))
+    app.run(host="0.0.0.0",port=port)
+
 # Press the green button in the gutter to run the script.
 backtest = back_test_strategy()
+
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -285,7 +296,7 @@ if __name__ == '__main__':
         dataNow = datetime.now().minute
         # check the server connection
         if dataNow != current:
-            if (dataNow % 1) == 0:
+            if (dataNow % 2) == 0:
                 result = request_client.get_servertime()
                 print(result)
 
