@@ -283,11 +283,12 @@ class back_test_strategy:
 backtest = back_test_strategy()
 
 def record_loop():
+    global request_client
+
     backtest.init_strategy()
 
     current = 0
     while (True):
-
         dataNow = datetime.now().minute
         # check the server connection
         if dataNow != current:
