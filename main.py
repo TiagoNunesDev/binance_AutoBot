@@ -6,6 +6,13 @@ from binance_f import RequestClient
 from binance_f.constant.test import *
 from binance_f.base.printobject import *
 from binance_f.model.constant import *
+from datetime import datetime
+from decimal import *
+from decimal import Decimal
+import  math
+import time
+import logging
+
 
 g_api_key = '1fd892fecd57b6a765bb6ee3cfca2376a34aafe8dccf898b27f27e54f54674f9'
 g_secret_key = 'ad53106d7c3cdb2431641f657984133a0e22c475331037493520f1c061ba7154'
@@ -272,5 +279,14 @@ backtest = back_test_strategy()
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     backtest.get_balance()
+    current = 0
+    while (True):
+
+        dataNow = datetime.now().minute
+        # check the server connection
+        if dataNow != current:
+            if (dataNow % 1) == 0:
+                result = request_client.get_servertime()
+                print(result)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

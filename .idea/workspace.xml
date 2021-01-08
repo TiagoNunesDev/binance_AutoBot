@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="33a4a072-e7d5-4d32-a7ef-1098d7cabcfb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
@@ -20,6 +38,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -57,23 +76,34 @@
     </task>
     <servers />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="WindowStateProjectService">
-    <state width="1360" height="184" key="GridCell.Tab.0.bottom" timestamp="1610142970669">
+    <state width="1345" height="187" key="GridCell.Tab.0.bottom" timestamp="1610143877278">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1360" height="184" key="GridCell.Tab.0.bottom/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610142970669" />
-    <state width="1360" height="184" key="GridCell.Tab.0.center" timestamp="1610142970669">
+    <state width="1345" height="187" key="GridCell.Tab.0.bottom/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610143877278" />
+    <state width="1345" height="187" key="GridCell.Tab.0.center" timestamp="1610143877278">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1360" height="184" key="GridCell.Tab.0.center/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610142970669" />
-    <state width="1360" height="184" key="GridCell.Tab.0.left" timestamp="1610142970668">
+    <state width="1345" height="187" key="GridCell.Tab.0.center/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610143877278" />
+    <state width="1345" height="187" key="GridCell.Tab.0.left" timestamp="1610143877278">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1360" height="184" key="GridCell.Tab.0.left/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610142970668" />
-    <state width="1360" height="184" key="GridCell.Tab.0.right" timestamp="1610142970669">
+    <state width="1345" height="187" key="GridCell.Tab.0.left/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610143877278" />
+    <state width="1345" height="187" key="GridCell.Tab.0.right" timestamp="1610143877278">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1360" height="184" key="GridCell.Tab.0.right/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610142970669" />
+    <state width="1345" height="187" key="GridCell.Tab.0.right/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610143877278" />
     <state x="184" y="9" key="SettingsEditor" timestamp="1610139630978">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -84,7 +114,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>
-          <line>17</line>
+          <line>18</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
