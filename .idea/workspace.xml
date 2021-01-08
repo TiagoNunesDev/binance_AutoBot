@@ -21,7 +21,7 @@
   <component name="ChangeListManager">
     <list default="true" id="33a4a072-e7d5-4d32-a7ef-1098d7cabcfb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,6 +77,9 @@
     </task>
     <servers />
   </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="requirements.txt" />
+  </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
@@ -89,22 +92,22 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state width="1345" height="2" key="GridCell.Tab.0.bottom" timestamp="1610144537458">
+    <state width="1345" height="269" key="GridCell.Tab.0.bottom" timestamp="1610145089996">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1345" height="2" key="GridCell.Tab.0.bottom/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610144537458" />
-    <state width="1345" height="2" key="GridCell.Tab.0.center" timestamp="1610144537458">
+    <state width="1345" height="269" key="GridCell.Tab.0.bottom/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610145089996" />
+    <state width="1345" height="269" key="GridCell.Tab.0.center" timestamp="1610145089996">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1345" height="2" key="GridCell.Tab.0.center/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610144537458" />
-    <state width="1345" height="2" key="GridCell.Tab.0.left" timestamp="1610144537458">
+    <state width="1345" height="269" key="GridCell.Tab.0.center/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610145089996" />
+    <state width="1345" height="269" key="GridCell.Tab.0.left" timestamp="1610145089996">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1345" height="2" key="GridCell.Tab.0.left/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610144537458" />
-    <state width="1345" height="2" key="GridCell.Tab.0.right" timestamp="1610144537458">
+    <state width="1345" height="269" key="GridCell.Tab.0.left/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610145089996" />
+    <state width="1345" height="269" key="GridCell.Tab.0.right" timestamp="1610145089996">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1345" height="2" key="GridCell.Tab.0.right/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610144537458" />
+    <state width="1345" height="269" key="GridCell.Tab.0.right/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610145089996" />
     <state x="184" y="9" key="SettingsEditor" timestamp="1610139630978">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -115,7 +118,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>
-          <line>19</line>
+          <line>22</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
