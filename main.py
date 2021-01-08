@@ -292,7 +292,7 @@ def record_loop():
         dataNow = datetime.now().minute
         # check the server connection
         if dataNow != current:
-            if (dataNow % 1) == 0:
+            if (dataNow % 5) == 0:
                 result = request_client.get_servertime()
                 if result != 0:
                     current = dataNow
