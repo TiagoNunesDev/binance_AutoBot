@@ -11,6 +11,7 @@ from decimal import *
 from decimal import Decimal
 from flask import Flask
 from flask_cors import CORS
+from multiprocessing import Process, Value
 import  math
 import time
 
@@ -20,13 +21,21 @@ app = Flask(__name__)
 
 cors = CORS(app, resource={r"/*":{"origins": "*"}})
 
+def record_loop():
+    while True:
+        print("OK")
+        time.sleep(2)
+
 def main():
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+    p = Process(target=record_loop)
+    p.start()
     main()
-    print("ola")
+    p.join()
+
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
