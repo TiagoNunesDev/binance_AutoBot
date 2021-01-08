@@ -1,5 +1,4 @@
 apscheduler==3.6.3
-binance-futures==1.1.0
 certifi==2020.12.5
 chardet==4.0.0
 idna==2.10
@@ -9,3 +8,5 @@ six==1.15.0
 tzlocal==2.1
 urllib3==1.26.2
 websocket-client==0.57.0
+git+https://github.com/Binance-docs/Binance_Futures_python.git
+
