@@ -38,7 +38,7 @@ class back_test_strategy:
         self.buyStatus = 0
         self.tradeState = 0
         self.tradeCounter = 0
-        self.testCounter = 0
+
 
         # Coin for trading variables
         self.coin = 'BTCUSDT'
@@ -430,7 +430,9 @@ class back_test_strategy:
                 self.buyPrice = self.price
                 print("---------------------------------------------")
                 self.post_order(0,(self.minimalCoinBuy * pow(2, self.tradeCounter)))
-                self.testCounter = self.testCounter + 1
+                print("ORDER SELL :",self.coin)
+                print("Quantity: ",(self.minimalCoinBuy * pow(2, self.tradeCounter)))
+                print("---------------------------------------------")
 
         except ValueError:
             print(ValueError)
