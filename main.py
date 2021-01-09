@@ -316,6 +316,7 @@ def record_loop():
     while (True):
         try:
            backtest.get_balance()
+           print("Current balance:", backtest.available)
         except Exception as e:
             print(e)
 
