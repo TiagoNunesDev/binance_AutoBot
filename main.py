@@ -10,6 +10,7 @@ from flask_cors import CORS
 from multiprocessing import Process, Value
 import  math
 import time
+import sys, os
 import logging
 
 app = Flask(__name__)
@@ -21,7 +22,6 @@ g_secret_key = 'c2340bebf086e113b6e3bd52f5bd17ccb201649a8f2b82804dec531a7fb16b0f
 
 # --------------------------- Init Client -------------------------------------------
 request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key,url='https://testnet.binancefuture.com/')
-
 
 
 # This class provides utility functions to work with Strings
@@ -114,16 +114,28 @@ class back_test_strategy:
     # 1. reverse(s): returns the reverse of the input string
     # 2. print(s): prints the string representation of the input object
     def get_balance(self):
-        data = request_client.get_balance_v2()
-        for idx, row in enumerate(data):
-            if idx == 0:
-                members = [attr for attr in dir(row) if not callable(attr) and not attr.startswith("__")]
-                for member_def in members:
-                    val_str = str(getattr(row, member_def))
-                    if member_def == 'availableBalance':
-                        self.available = float(val_str)
-                    if member_def == 'balance':
-                        self.balance = float(val_str)
+        try:
+            sys.stdout = open(os.devnull, 'w')
+            data = request_client.get_balance_v2()
+            sys.stdout = sys.__stdout__
+        except Exception as e:
+            print("Error acessing balance")
+        else:
+            for idx, row in enumerate(data):
+                if idx == 0:
+                    members = [attr for attr in dir(row) if not callable(attr) and not attr.startswith("__")]
+                    for member_def in members:
+                        val_str = str(getattr(row, member_def))
+                        if member_def == 'availableBalance':
+                            self.available = float(val_str)
+                        if member_def == 'balance':
+                            self.balance = float(val_str)
+
+            print("Current balance:",self.available)
+
+
+
+
 
 
     # This function provides utility functions to work with Strings
@@ -145,7 +157,7 @@ class back_test_strategy:
         else:
             result = request_client.post_order(symbol=self.coin, side=OrderSide.BUY,
                                                ordertype=OrderType.MARKET, closePosition=False, quantity=quantity)
-        time.sleep(4)
+        time.sleep(2)
 
 
 
@@ -157,11 +169,9 @@ class back_test_strategy:
         result = 0
         entryPrice = 0
         stopPrice  = 0
-        if type == 0:
-            # set bew trade
 
-            # result = request_client.post_order(symbol=self.coin, side=OrderSide.SELL,
-            #                                    ordertype=OrderType.MARKET, closePosition=False, quantity=quantity)
+        if type == 0:
+
             self.post_single_order(type,quantity)
 
             request_client.cancel_all_orders(symbol=self.coin)
@@ -285,26 +295,36 @@ backtest = back_test_strategy()
 def record_loop():
     global request_client
 
-    backtest.init_strategy()
+    # backtest.init_strategy()
 
     current = 0
     while (True):
-        dataNow = datetime.now().minute
-        # check the server connection
-        if dataNow != current:
-            if (dataNow % 5) == 0:
-                result = request_client.get_servertime()
-                if result != 0:
-                    current = dataNow
 
-                    backtest.positionSize = 0
-                    backtest.get_open_positions(backtest.coin)
-                    if backtest.positionSize == 0:
-                        backtest.buyStatus = 0
-                    backtest.process_Price()
-                else:
-                    request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key,
-                                                   url='https://testnet.binancefuture.com/')
+        try:
+           backtest.get_balance()
+        except Exception as e:
+            print(e)
+
+        time.sleep(2)
+
+
+
+        # dataNow = datetime.now().minute
+        # # check the server connection
+        # if dataNow != current:
+        #     if (dataNow % 5) == 0:
+        #         result = request_client.get_servertime()
+        #         if result != 0:
+        #             current = dataNow
+        #
+        #             backtest.positionSize = 0
+        #             backtest.get_open_positions(backtest.coin)
+        #             if backtest.positionSize == 0:
+        #                 backtest.buyStatus = 0
+        #             backtest.process_Price()
+        #         else:
+        #             request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key,
+        #                                            url='https://testnet.binancefuture.com/')
 
 
 @app.route("/", methods=['GET'])
