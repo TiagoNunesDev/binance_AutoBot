@@ -146,7 +146,7 @@ class back_test_strategy:
                         if member_def == 'balance':
                             self.balance = float(val_str)
 
-            print("Current balance:",self.available)
+
 
 
 
@@ -351,7 +351,7 @@ def main():
 
 # Press the green button in the gutter to run the script.
 
-backtest = back_test_strategy()
+# backtest = back_test_strategy()
 
 
 if __name__ == '__main__':
