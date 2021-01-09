@@ -479,23 +479,6 @@ def record_loop():
 
 
 
-        dataNow = datetime.now().minute
-        # check the server connection
-        if dataNow != current:
-            if (dataNow % 5) == 0:
-                result = request_client.get_servertime()
-                if result != 0:
-                    current = dataNow
-
-                    backtest.positionSize = 0
-                    backtest.get_open_positions(backtest.coin)
-                    if backtest.positionSize == 0:
-                        backtest.buyStatus = 0
-                    backtest.process_Price()
-                else:
-                    request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key,
-                                                   url='https://testnet.binancefuture.com/')
-
 
 @app.route("/", methods=['GET'])
 def index():
