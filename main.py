@@ -57,58 +57,73 @@ class back_test_strategy:
         self.markPrice    = 0
 
     def get_open_positions(self, symbol):
-        result = request_client.get_position()
+        try:
+            sys.stdout = open(os.devnull, 'w')
+            result = request_client.get_position()
+            sys.stdout = sys.__stdout__
 
-        for idx, row in enumerate(result):
-                members = [attr for attr in dir(row) if not callable(attr) and not attr.startswith("__")]
-                for member_def in members:
-                    val_str = str(getattr(row, member_def))
-                    if member_def == 'symbol':
-                        if str(val_str) == symbol:
-                            return
-                    if member_def == 'positionAmt':
-                        self.positionSize = float(val_str)
+        except Exception as e:
+            print("Error: Getting current open positions")
+        else:
+            for idx, row in enumerate(result):
+                    members = [attr for attr in dir(row) if not callable(attr) and not attr.startswith("__")]
+                    for member_def in members:
+                        val_str = str(getattr(row, member_def))
+                        if member_def == 'symbol':
+                            if str(val_str) == symbol:
+                                return
+                        if member_def == 'positionAmt':
+                            self.positionSize = float(val_str)
 
-                    if member_def == 'entryPrice':
-                        self.entryPrice = float(val_str)
+                        if member_def == 'entryPrice':
+                            self.entryPrice = float(val_str)
 
-                    if member_def == 'markPrice':
-                        self.markPrice = float(val_str)
+                        if member_def == 'markPrice':
+                            self.markPrice = float(val_str)
 
     def get_position_entry_price(self):
-        result = request_client.get_position()
-
-        price = 0
-        for idx, row in enumerate(result):
-                members = [attr for attr in dir(row) if not callable(attr) and not attr.startswith("__")]
-                for member_def in members:
-                    val_str = str(getattr(row, member_def))
-                    if member_def == 'symbol':
-                        if str(val_str) == self.coin:
-                            return price
-                    if member_def == 'entryPrice':
-                        price = float(val_str)
+        try:
+            sys.stdout = open(os.devnull, 'w')
+            result = request_client.get_position()
+            sys.stdout = sys.__stdout__
+        except Exception as e:
+            print("Error: Getting current open position price")
+        else:
+            price = 0
+            for idx, row in enumerate(result):
+                    members = [attr for attr in dir(row) if not callable(attr) and not attr.startswith("__")]
+                    for member_def in members:
+                        val_str = str(getattr(row, member_def))
+                        if member_def == 'symbol':
+                            if str(val_str) == self.coin:
+                                return price
+                        if member_def == 'entryPrice':
+                            price = float(val_str)
 
 
     # This function provides utility functions to work with Strings
     # 1. reverse(s): returns the reverse of the input string
     # 2. print(s): prints the string representation of the input object
     def init_strategy(self):
-        self.get_open_positions(self.coin)
-        self.get_balance()
+        try:
+            self.get_open_positions(self.coin)
+            self.get_balance()
 
-        if self.positionSize != 0:
-            self.buyStatus = 1
+            if self.positionSize != 0:
+                self.buyStatus = 1
 
-            if self.positionSize < 0:
-                self.tradeCounter = math.log2((abs(self.positionSize) * 0.5)/self.minimalCoinBuy) / math.log2(2)
-                self.tradeState = 0
-                self.buyPrice = self.entryPrice
-            else:
-                self.tradeCounter = -1
-                self.tradeState = math.log2((self.positionSize * 0.5)/self.minimalCoinBuy) / math.log2(2)
-                self.buyPrice = self.entryPrice
-
+                if self.positionSize < 0:
+                    self.tradeCounter = math.log2((abs(self.positionSize) * 0.5)/self.minimalCoinBuy) / math.log2(2)
+                    self.tradeState = 0
+                    self.buyPrice = self.entryPrice
+                else:
+                    self.tradeCounter = -1
+                    self.tradeState = math.log2((self.positionSize * 0.5)/self.minimalCoinBuy) / math.log2(2)
+                    self.buyPrice = self.entryPrice
+        except ValueError:
+            print("Error: Strategy initialization")
+        else:
+            print("Strategy init successfully")
 
     # This function provides utility functions to work with Strings
     # 1. reverse(s): returns the reverse of the input string
@@ -299,7 +314,6 @@ def record_loop():
 
     current = 0
     while (True):
-
         try:
            backtest.get_balance()
         except Exception as e:
