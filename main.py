@@ -310,7 +310,7 @@ backtest = back_test_strategy()
 def record_loop():
     global request_client
 
-    # backtest.init_strategy()
+    backtest.init_strategy()
 
     current = 0
     while (True):
