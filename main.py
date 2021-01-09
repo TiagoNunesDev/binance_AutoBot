@@ -305,7 +305,7 @@ def record_loop():
         except Exception as e:
             print(e)
 
-        time.sleep(2)
+        time.sleep(60)
 
 
 
