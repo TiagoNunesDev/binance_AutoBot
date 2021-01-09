@@ -471,7 +471,7 @@ def record_loop():
                             print("Error:restarting client")
                         else:
                             print("Cient restarted")
-                            
+
         except Exception as e:
             print(e)
 
