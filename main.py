@@ -428,8 +428,8 @@ class back_test_strategy:
                 self.buyStatus = 1
                 self.tradeState = 0
                 self.buyPrice = self.price
-                print("---------------------------------------------")
                 self.post_order(0,(self.minimalCoinBuy * pow(2, self.tradeCounter)))
+                print("---------------------------------------------")
                 print("ORDER SELL :",self.coin)
                 print("Quantity: ",(self.minimalCoinBuy * pow(2, self.tradeCounter)))
                 print("---------------------------------------------")
@@ -464,6 +464,8 @@ def record_loop():
                         if backtest.positionSize == 0:
                             backtest.buyStatus = 0
                         backtest.process_Price()
+                        print("Bot -> ON")
+
                     else:
                         try:
                             request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key,
