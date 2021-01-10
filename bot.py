@@ -11,37 +11,12 @@ from multiprocessing import Process, Value
 import  math
 import time
 import sys, os
-import logging
-import bot
 
-app = Flask(__name__)
-cors = CORS(app, resource={r"/*":{"origins": "*"}})
-
-key = os.environ.get('API_KEY')
-secret = os.environ.get('API_SECRET')
-
-
-# --------------------------- Tesnet API Keys -------------------------------------------
-
-# g_api_key = '9ed2810f070aa3c9378af0a828cdc46c6a20a347f9c80004e37a26f5d373e3b5'
-# g_secret_key = 'c2340bebf086e113b6e3bd52f5bd17ccb201649a8f2b82804dec531a7fb16b0f'
-
-# --------------------------- Init Client -------------------------------------------
-try:
-    request_client = RequestClient(api_key=key, secret_key=secret,url='https://testnet.binancefuture.com/')
-except Exception as e:
-    print("ERROR: Connecting to client")
-else:
-    print("INFO: Connected to client")
-
-# This class provides utility functions to work with Strings
-# 1. reverse(s): returns the reverse of the input string
-# 2. print(s): prints the string representation of the input object
-class back_test_strategy:
-    def __init__(self):
+class bot:
+    def __init__(self,requestClient, coin, minimalcoinbuy):
 
         # Trade strategy variables
-
+        self.client = requestClient
         self.account = 0
         self.buyPrice = 0
         self.buyPriceType = 0
@@ -51,7 +26,7 @@ class back_test_strategy:
 
 
         # Coin for trading variables
-        self.coin = 'BTCUSDT'
+        self.coin = coin
         self.price = 0
         self.timestamp = 0
         self.date = 0
@@ -59,7 +34,7 @@ class back_test_strategy:
         # Account balance variables
         self.balance = 0    #current total balance of this account
         self.available = 0  #current avaiable balance for trading
-        self.minimalCoinBuy = 10 #62
+        self.minimalCoinBuy = minimalcoinbuy
 
         #initial positions
         self.positionSize = 0
@@ -69,7 +44,7 @@ class back_test_strategy:
     def get_open_positions(self, symbol):
         try:
             sys.stdout = open(os.devnull, 'w')
-            result = request_client.get_position()
+            result = self.client.get_position()
             sys.stdout = sys.__stdout__
 
         except Exception as e:
@@ -95,7 +70,7 @@ class back_test_strategy:
     def get_position_entry_price(self):
         try:
             sys.stdout = open(os.devnull, 'w')
-            result = request_client.get_position()
+            result = self.client.get_position()
             sys.stdout = sys.__stdout__
         except Exception as e:
             print(e)
@@ -145,7 +120,7 @@ class back_test_strategy:
     def get_balance(self):
         try:
             sys.stdout = open(os.devnull, 'w')
-            data = request_client.get_balance_v2()
+            data = self.client.get_balance_v2()
             sys.stdout = sys.__stdout__
         except Exception as e:
             print(e)
@@ -175,7 +150,7 @@ class back_test_strategy:
     def change_leverage(self, symbol , leverage):
         try:
             sys.stdout = open(os.devnull, 'w')
-            request_client.change_initial_leverage(symbol=symbol, leverage=2)
+            self.client.change_initial_leverage(symbol=symbol, leverage=2)
             sys.stdout = sys.__stdout__
         except Exception as e:
             print(e)
@@ -188,7 +163,7 @@ class back_test_strategy:
     def post_sell_order(self, quantity):
         try:
             sys.stdout = open(os.devnull, 'w')
-            request_client.post_order(symbol=self.coin, side=OrderSide.SELL,
+            self.client.post_order(symbol=self.coin, side=OrderSide.SELL,
                                            ordertype=OrderType.MARKET, closePosition=False, quantity=quantity)
             sys.stdout = sys.__stdout__
         except Exception as e:
@@ -203,7 +178,7 @@ class back_test_strategy:
     def set_sell_order_profit(self,quantity,stprice):
         try:
             sys.stdout = open(os.devnull, 'w')
-            request_client.post_order(symbol=self.coin, side=OrderSide.BUY,
+            self.client.post_order(symbol=self.coin, side=OrderSide.BUY,
                                            ordertype=OrderType.TAKE_PROFIT_MARKET, closePosition=True,
                                            quantity=quantity, stopPrice=stprice)
             sys.stdout = sys.__stdout__
@@ -219,7 +194,7 @@ class back_test_strategy:
     def set_sell_order_take_loss(self,quantity,stprice):
         try:
             sys.stdout = open(os.devnull, 'w')
-            request_client.post_order(symbol=self.coin, side=OrderSide.BUY,
+            self.client.post_order(symbol=self.coin, side=OrderSide.BUY,
                                                ordertype=OrderType.STOP_MARKET, closePosition=True,
                                                quantity=quantity, stopPrice=stprice)
             sys.stdout = sys.__stdout__
@@ -235,7 +210,7 @@ class back_test_strategy:
     def post_buy_order(self, quantity):
         try:
             sys.stdout = open(os.devnull, 'w')
-            request_client.post_order(symbol=self.coin, side=OrderSide.BUY,
+            self.client.post_order(symbol=self.coin, side=OrderSide.BUY,
                                                ordertype=OrderType.MARKET, closePosition=False, quantity=quantity)
             sys.stdout = sys.__stdout__
         except Exception as e:
@@ -251,7 +226,7 @@ class back_test_strategy:
     def set_buy_order_profit(self,quantity,stprice):
         try:
             sys.stdout = open(os.devnull, 'w')
-            request_client.post_order(symbol=self.coin, side=OrderSide.SELL,
+            self.client.post_order(symbol=self.coin, side=OrderSide.SELL,
                                                ordertype=OrderType.TAKE_PROFIT_MARKET, closePosition=True,
                                                quantity=quantity, stopPrice=stprice)
             sys.stdout = sys.__stdout__
@@ -268,7 +243,7 @@ class back_test_strategy:
     def set_buy_order_take_loss(self,quantity,stprice):
         try:
             sys.stdout = open(os.devnull, 'w')
-            request_client.post_order(symbol=self.coin, side=OrderSide.SELL,
+            self.client.post_order(symbol=self.coin, side=OrderSide.SELL,
                                                ordertype=OrderType.STOP_MARKET, closePosition=True,
                                                quantity=quantity,stopPrice=stprice)
             sys.stdout = sys.__stdout__
@@ -286,7 +261,7 @@ class back_test_strategy:
     def cancel_all_orders(self):
         try:
             sys.stdout = open(os.devnull, 'w')
-            request_client.cancel_all_orders(symbol=self.coin)
+            self.client.cancel_all_orders(symbol=self.coin)
             sys.stdout = sys.__stdout__
         except Exception as e:
             print(e)
@@ -369,7 +344,7 @@ class back_test_strategy:
 
         try:
             sys.stdout = open(os.devnull, 'w')
-            data = request_client.get_candlestick_data(symbol=self.coin, interval=CandlestickInterval.MIN5, startTime=None,endTime=None, limit=1)
+            data = self.client.get_candlestick_data(symbol=self.coin, interval=CandlestickInterval.MIN5, startTime=None,endTime=None, limit=1)
             sys.stdout = sys.__stdout__
         except Exception as e:
             print(e)
@@ -394,7 +369,7 @@ class back_test_strategy:
         result = 0
         try:
             sys.stdout = open(os.devnull, 'w')
-            result = request_client.get_servertime()
+            result = self.client.get_servertime()
             sys.stdout = sys.__stdout__
         except Exception as e:
             print(e)
@@ -422,7 +397,7 @@ class back_test_strategy:
                     self.tradeState = 1
                     print("Long at:",self.price, "current balance:", self.account)
 
-                elif self.price <= self.buyPrice * 0.987 and self.tradeState == 1:
+                elif self.price <= self.buyPrice and self.tradeState == 1:
 
                     self.tradeCounter = self.tradeCounter + 1
                     self.get_balance()
@@ -449,71 +424,3 @@ class back_test_strategy:
         except ValueError:
             print(ValueError)
             print("Error:Strategy")
-
-
-
-backtest = back_test_strategy()
-
-def record_loop():
-    global request_client
-
-    backtest.init_strategy()
-
-    current = 0
-    while (True):
-        try:
-            dataNow = datetime.now().minute
-            # check the server connection
-            if dataNow != current:
-                if (dataNow % 5) == 0:
-                    result = backtest.get_servertime()
-
-                    if result != 0:
-                        current = dataNow
-
-                        backtest.positionSize = 0
-                        backtest.get_open_positions(backtest.coin)
-                        if backtest.positionSize == 0:
-                            backtest.buyStatus = 0
-                        backtest.process_Price()
-                        print("INFO: Bot -> ON")
-
-                    else:
-                        try:
-                            request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key,
-                                                       url='https://testnet.binancefuture.com/')
-                        except Exception as e:
-                            print(e)
-                            print("ERROR: restarting client")
-                        else:
-                            print("INFO: Cient restarted")
-
-        except Exception as e:
-            print(e)
-
-
-
-
-
-
-@app.route("/", methods=['GET'])
-def index():
-    return "<h1>Hello World!</h1>"
-
-def main():
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
-
-# Press the green button in the gutter to run the script.
-
-# backtest = back_test_strategy()
-
-
-if __name__ == '__main__':
-    p = Process(target=record_loop)
-    p.start()
-    main()
-    p.join()
-
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
