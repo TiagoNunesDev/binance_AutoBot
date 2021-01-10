@@ -16,6 +16,12 @@ import logging
 app = Flask(__name__)
 cors = CORS(app, resource={r"/*":{"origins": "*"}})
 
+key = os.environ.get('API_KEY')
+secret = os.environ.get('API_SECRECT')
+print(key)
+print(secret)
+
+
 # --------------------------- Tesnet API Keys -------------------------------------------
 g_api_key = '9ed2810f070aa3c9378af0a828cdc46c6a20a347f9c80004e37a26f5d373e3b5'
 g_secret_key = 'c2340bebf086e113b6e3bd52f5bd17ccb201649a8f2b82804dec531a7fb16b0f'
@@ -224,8 +230,10 @@ class back_test_strategy:
     # 2. print(s): prints the string representation of the input object
     def post_buy_order(self, quantity):
         try:
+            sys.stdout = open(os.devnull, 'w')
             request_client.post_order(symbol=self.coin, side=OrderSide.BUY,
                                                ordertype=OrderType.MARKET, closePosition=False, quantity=quantity)
+            sys.stdout = sys.__stdout__
         except Exception as e:
             print(e)
             print("Error:Open buy order")
