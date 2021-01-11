@@ -12,7 +12,8 @@ import  math
 import time
 import sys, os
 
-class bot:
+class Bot:
+
     def __init__(self,requestClient, coin, minimalcoinbuy):
 
         # --- Initial variables  -----
@@ -48,8 +49,8 @@ class bot:
             sys.stdout = sys.__stdout__
 
         except Exception as e:
+            sys.stdout = sys.__stdout__
             print(e)
-            print("Error: Getting current open positions")
             return False
         else:
             for idx, row in enumerate(result):
@@ -75,8 +76,8 @@ class bot:
             result = self.client.get_position()
             sys.stdout = sys.__stdout__
         except Exception as e:
+            sys.stdout = sys.__stdout__
             print(e)
-            print("Error: Getting current open position price")
         else:
             price = 0
             for idx, row in enumerate(result):
@@ -102,14 +103,12 @@ class bot:
             if self.positionSize != 0:
                 self.buyStatus = 1
 
-                # if self.positionSize < 0:
-                #     self.tradeCounter = math.log2((abs(self.positionSize) * 0.5)/self.minimalCoinBuy) / math.log2(2)
-                #     self.tradeState = 0
-                #     self.buyPrice = self.entryPrice
-                # else:
-                #     self.tradeCounter = -1
-                #     self.tradeState = math.log2((self.positionSize * 0.5)/self.minimalCoinBuy) / math.log2(2)
-                #     self.buyPrice = self.entryPrice
+                if self.positionSize < 0:
+                    self.tradeState = 0
+                    self.buyPrice = self.entryPrice
+                else:
+                    self.tradeState = 1
+                    self.buyPrice = self.entryPrice
 
         except ValueError:
             print(ValueError)
@@ -126,8 +125,8 @@ class bot:
             data = self.client.get_balance_v2()
             sys.stdout = sys.__stdout__
         except Exception as e:
+            sys.stdout = sys.__stdout__
             print(e)
-            print("Error acessing balance")
         else:
             for idx, row in enumerate(data):
                 if idx == 0:
@@ -149,9 +148,9 @@ class bot:
             self.client.change_initial_leverage(symbol=symbol, leverage=2)
             sys.stdout = sys.__stdout__
         except Exception as e:
+            sys.stdout = sys.__stdout__
             print(e)
-            print("Error: Change leverage")
-        # print(result)
+
 
     # This function provides utility functions to work with Strings
     # 1. reverse(s): returns the reverse of the input string
@@ -163,8 +162,8 @@ class bot:
                                            ordertype=OrderType.MARKET, closePosition=False, quantity=quantity)
             sys.stdout = sys.__stdout__
         except Exception as e:
+            sys.stdout = sys.__stdout__
             print(e)
-            print("Error: Open sell order")
         else:
             time.sleep(2)
 
@@ -179,8 +178,8 @@ class bot:
                                            quantity=quantity, stopPrice=stprice)
             sys.stdout = sys.__stdout__
         except Exception as e:
+            sys.stdout = sys.__stdout__
             print(e)
-            print("Error: Set sell order profit")
         else:
             time.sleep(2)
 
@@ -195,8 +194,8 @@ class bot:
                                                quantity=quantity, stopPrice=stprice)
             sys.stdout = sys.__stdout__
         except Exception as e:
+            sys.stdout = sys.__stdout__
             print(e)
-            print("Error: Set sell order profit")
         else:
             time.sleep(2)
 
@@ -210,8 +209,8 @@ class bot:
                                                ordertype=OrderType.MARKET, closePosition=False, quantity=quantity)
             sys.stdout = sys.__stdout__
         except Exception as e:
+            sys.stdout = sys.__stdout__
             print(e)
-            print("Error:Open buy order")
         else:
             time.sleep(2)
 
@@ -227,8 +226,8 @@ class bot:
                                                quantity=quantity, stopPrice=stprice)
             sys.stdout = sys.__stdout__
         except Exception as e:
+            sys.stdout = sys.__stdout__
             print(e)
-            print("Error: Set sell order profit")
         else:
             time.sleep(2)
 
@@ -244,8 +243,8 @@ class bot:
                                                quantity=quantity,stopPrice=stprice)
             sys.stdout = sys.__stdout__
         except Exception as e:
+            sys.stdout = sys.__stdout__
             print(e)
-            print("Error: Set sell order profit")
         else:
             time.sleep(2)
 
@@ -260,8 +259,8 @@ class bot:
             self.client.cancel_all_orders(symbol=self.coin)
             sys.stdout = sys.__stdout__
         except Exception as e:
+            sys.stdout = sys.__stdout__
             print(e)
-            print("Error: Set sell order profit")
         else:
             time.sleep(1)
 
@@ -338,8 +337,8 @@ class bot:
             data = self.client.get_candlestick_data(symbol=self.coin, interval=CandlestickInterval.MIN5, startTime=None,endTime=None, limit=1)
             sys.stdout = sys.__stdout__
         except Exception as e:
+            sys.stdout = sys.__stdout__
             print(e)
-            print("Error: getting Price")
             return False
         else:
             for idx, row in enumerate(data):
@@ -364,8 +363,8 @@ class bot:
             result = self.client.get_servertime()
             sys.stdout = sys.__stdout__
         except Exception as e:
+            sys.stdout = sys.__stdout__
             print(e)
-            print("Error: getting Price")
         else:
             return result
 
@@ -377,13 +376,14 @@ class bot:
             # ---------------------------------------------------------
             # ---------- Check for current open positions -------------
 
-            if self.get_open_positions():
-                if self.positionSize == 0:
-                    self.buyStatus = 0
-                else:
-                    self.buyStatus = 0
+            # if self.get_open_positions(self.coin):
+            #     if self.positionSize == 0:
+            #         self.buyStatus = 0
+            #     else:
+            #         self.buyStatus = 0
 
                 # ---------- Check for current price -------------
+
                 self.get_price()
 
                 # ---------- Continue with the current opened position  -------------
@@ -392,21 +392,23 @@ class bot:
                     if self.price >= self.buyPrice * 1.013 and self.tradeState == 0:
                         self.get_balance()
 
-                        if self.post_order(1,(2 * self.positionSize) + self.minimalCoinBuy):
+                        if self.post_order(1, (2 * abs(self.positionSize)) + self.minimalCoinBuy):
                            self.tradeState = 1
 
                         print("---------------------------------------------")
                         print("INFO: Long at:", self.price, " Current balance:", self.available)
+                        print("INFO: Quantity:", (2 * abs(self.positionSize)) + self.minimalCoinBuy)
                         print("---------------------------------------------")
 
-                    elif self.price <= self.buyPrice * 0.987 and self.tradeState == 1:
+                    elif self.price <= self.buyPrice and self.tradeState == 1:
 
                         self.get_balance()
 
-                        if self.post_order(0, (2 * self.positionSize) + self.minimalCoinBuy):
+                        if self.post_order(0, (2 * abs(self.positionSize)) + self.minimalCoinBuy):
                             self.tradeState = 0
                         print("---------------------------------------------")
                         print("INFO: short at:", self.price, " Current balance:", self.available)
+                        print("INFO: Quantity:", (2 * abs(self.positionSize)) + self.minimalCoinBuy)
                         print("---------------------------------------------")
 
                 # ---------- Sell the first time position -------------
