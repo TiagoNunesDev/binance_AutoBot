@@ -36,7 +36,7 @@ else:
     print("INFO: Connected to client")
 
 
-backtest = Bot(request_client,coin,minimalQtd)
+backtest = Bot(request_client,coin,float(minimalQtd))
 
 
 # This function provides utility functions to work with Strings
