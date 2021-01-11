@@ -59,7 +59,7 @@ class back_test_strategy:
         # Account balance variables
         self.balance = 0    #current total balance of this account
         self.available = 0  #current avaiable balance for trading
-        self.minimalCoinBuy = 5 #62
+        self.minimalCoinBuy = 0.1 #62
 
         #initial positions
         self.positionSize = 0
@@ -422,7 +422,7 @@ class back_test_strategy:
                     self.tradeState = 1
                     print("Long at:",self.price, "current balance:", self.account)
 
-                elif self.price <= self.buyPrice * 0.987 and self.tradeState == 1:
+                elif self.price <= self.buyPrice and self.tradeState == 1:
 
                     self.tradeCounter = self.tradeCounter + 1
                     self.get_balance()
