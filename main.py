@@ -187,10 +187,11 @@ class back_test_strategy:
     # 2. print(s): prints the string representation of the input object
     def post_sell_order(self, quantity):
         try:
-            # sys.stdout = open(os.devnull, 'w')
-            request_client.post_order(symbol=self.coin, side=OrderSide.SELL,
+            sys.stdout = open(os.devnull, 'w')
+            request = request_client.post_order(symbol=self.coin, side=OrderSide.SELL,
                                            ordertype=OrderType.MARKET, closePosition=False, quantity=quantity)
-            # sys.stdout = sys.__stdout__
+            sys.stdout = sys.__stdout__
+            print(request)
         except Exception as e:
             print(e)
             print("Error: Open sell order")
@@ -202,11 +203,11 @@ class back_test_strategy:
     # 2. print(s): prints the string representation of the input object
     def set_sell_order_profit(self,quantity,stprice):
         try:
-            # sys.stdout = open(os.devnull, 'w')
+            sys.stdout = open(os.devnull, 'w')
             request_client.post_order(symbol=self.coin, side=OrderSide.BUY,
                                            ordertype=OrderType.TAKE_PROFIT_MARKET, closePosition=True,
                                            quantity=quantity, stopPrice=stprice)
-            # sys.stdout = sys.__stdout__
+            sys.stdout = sys.__stdout__
         except Exception as e:
             print(e)
             print("Error: Set sell order profit")
@@ -449,8 +450,6 @@ class back_test_strategy:
         except ValueError:
             print(ValueError)
             print("Error:Strategy")
-
-
 
 backtest = back_test_strategy()
 
