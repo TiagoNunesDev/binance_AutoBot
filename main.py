@@ -59,7 +59,7 @@ class back_test_strategy:
         # Account balance variables
         self.balance = 0    #current total balance of this account
         self.available = 0  #current avaiable balance for trading
-        self.minimalCoinBuy = 10 #62
+        self.minimalCoinBuy = 5 #62
 
         #initial positions
         self.positionSize = 0
