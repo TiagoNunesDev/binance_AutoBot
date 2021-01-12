@@ -392,23 +392,23 @@ class Bot:
                     if self.price >= self.buyPrice * 1.01 and self.tradeState == 0:
                         self.get_balance()
 
-                        if self.post_order(1, (2 * abs(self.positionSize)) + self.positionSize):
+                        if self.post_order(1, (2 * abs(self.positionSize)) + abs(self.positionSize)):
                            self.tradeState = 1
 
                         print("---------------------------------------------")
                         print("INFO: Long at:", self.price, " Current balance:", self.available)
-                        print("INFO: Quantity:", (2 * abs(self.positionSize)) + self.positionSize)
+                        print("INFO: Quantity:", (2 * abs(self.positionSize)) + abs(self.positionSize))
                         print("---------------------------------------------")
 
                     elif self.price <= self.buyPrice and self.tradeState == 1:
 
                         self.get_balance()
 
-                        if self.post_order(0, (2 * abs(self.positionSize)) + self.positionSize):
+                        if self.post_order(0, (2 * abs(self.positionSize)) + abs(self.positionSize)):
                             self.tradeState = 0
                         print("---------------------------------------------")
                         print("INFO: short at:", self.price, " Current balance:", self.available)
-                        print("INFO: Quantity:", (2 * abs(self.positionSize)) + self.positionSize)
+                        print("INFO: Quantity:", (2 * abs(self.positionSize)) + abs(self.positionSize))
                         print("---------------------------------------------")
 
                 # ---------- Sell the first time position -------------
