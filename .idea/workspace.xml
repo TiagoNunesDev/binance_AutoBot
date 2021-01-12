@@ -19,7 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="33a4a072-e7d5-4d32-a7ef-1098d7cabcfb" name="Default Changelist" comment="" />
+    <list default="true" id="33a4a072-e7d5-4d32-a7ef-1098d7cabcfb" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -155,7 +157,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bot.py</url>
-          <line>378</line>
+          <line>380</line>
           <option name="timeStamp" value="22" />
         </line-breakpoint>
       </breakpoints>

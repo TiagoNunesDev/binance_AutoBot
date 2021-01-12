@@ -280,6 +280,7 @@ class Bot:
                 self.post_sell_order(quantity)
 
                 entryPrice = self.get_position_entry_price()
+                self.buyPrice = entryPrice
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
@@ -304,6 +305,7 @@ class Bot:
                 # ---- get the current mark price and them apply the stop and profit ---
 
                 entryPrice = self.get_position_entry_price()
+                self.buyPrice = entryPrice
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
