@@ -283,7 +283,7 @@ class Bot:
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
-                stprice = Decimal(entryPrice*0.986)
+                stprice = Decimal(entryPrice*0.99)
                 stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
 
                 self.set_sell_order_profit(quantity, stprice)
@@ -307,7 +307,7 @@ class Bot:
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
-                stprice = Decimal(entryPrice * 1.013)
+                stprice = Decimal(entryPrice * 1.01)
                 stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
 
                 self.set_buy_order_profit(quantity,stprice)
@@ -389,7 +389,7 @@ class Bot:
                 # ---------- Continue with the current opened position  -------------
                 if self.buyStatus == 1:
 
-                    if self.price >= self.buyPrice * 1.013 and self.tradeState == 0:
+                    if self.price >= self.buyPrice * 1.01 and self.tradeState == 0:
                         self.get_balance()
 
                         if self.post_order(1, (2 * abs(self.positionSize)) + self.positionSize):
