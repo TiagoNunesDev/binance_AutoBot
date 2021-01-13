@@ -280,10 +280,11 @@ class Bot:
                 self.post_sell_order(quantity)
 
                 entryPrice = self.get_position_entry_price()
+                self.buyPrice = entryPrice
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
-                stprice = Decimal(entryPrice*0.986)
+                stprice = Decimal(entryPrice*0.99)
                 stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
 
                 self.set_sell_order_profit(quantity, stprice)
@@ -304,10 +305,11 @@ class Bot:
                 # ---- get the current mark price and them apply the stop and profit ---
 
                 entryPrice = self.get_position_entry_price()
+                self.buyPrice = entryPrice
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
-                stprice = Decimal(entryPrice * 1.013)
+                stprice = Decimal(entryPrice * 1.01)
                 stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
 
                 self.set_buy_order_profit(quantity,stprice)
@@ -389,26 +391,26 @@ class Bot:
                 # ---------- Continue with the current opened position  -------------
                 if self.buyStatus == 1:
 
-                    if self.price >= self.buyPrice * 1.013 and self.tradeState == 0:
+                    if self.price >= self.buyPrice * 1.01 and self.tradeState == 0:
                         self.get_balance()
 
-                        if self.post_order(1, (2 * abs(self.positionSize)) + self.minimalCoinBuy):
+                        if self.post_order(1, (2 * abs(self.positionSize)) + abs(self.positionSize)):
                            self.tradeState = 1
 
                         print("---------------------------------------------")
                         print("INFO: Long at:", self.price, " Current balance:", self.available)
-                        print("INFO: Quantity:", (2 * abs(self.positionSize)) + self.minimalCoinBuy)
+                        print("INFO: Quantity:", (2 * abs(self.positionSize)) + abs(self.positionSize))
                         print("---------------------------------------------")
 
                     elif self.price <= self.buyPrice and self.tradeState == 1:
 
                         self.get_balance()
 
-                        if self.post_order(0, (2 * abs(self.positionSize)) + self.minimalCoinBuy):
+                        if self.post_order(0, (2 * abs(self.positionSize)) + abs(self.positionSize)):
                             self.tradeState = 0
                         print("---------------------------------------------")
                         print("INFO: short at:", self.price, " Current balance:", self.available)
-                        print("INFO: Quantity:", (2 * abs(self.positionSize)) + self.minimalCoinBuy)
+                        print("INFO: Quantity:", (2 * abs(self.positionSize)) + abs(self.positionSize))
                         print("---------------------------------------------")
 
                 # ---------- Sell the first time position -------------
