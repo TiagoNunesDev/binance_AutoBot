@@ -55,7 +55,7 @@ def record_loop():
             dataNow = datetime.now().minute
             # check the server connection
             if dataNow != current:
-                if (dataNow % 1) == 0:
+                if (dataNow % 5) == 0:
                     result = backtest.get_servertime()
 
                     if result != 0:
@@ -66,7 +66,8 @@ def record_loop():
                         if backtest.positionSize == 0:
                             backtest.buyStatus = 0
                         backtest.process_Price()
-                        print("INFO: Bot -> ON")
+                        print("INFO: Bot -> ON ")
+                        print("INFO: next trade ->")
 
                     else:
                         try:

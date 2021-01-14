@@ -394,7 +394,13 @@ class Bot:
                 # ---------- Continue with the current opened position  -------------
                 if self.buyStatus == 1:
 
-                    if self.price >= self.buyPrice * 1.01 and self.tradeState == 0:
+                    if(self.tradeState == 0):
+                        print("INFO: Next buy at: :", self.buyPrice * 1.01)
+                    elif(self.tradeState == 1):
+                        print("INFO: Next sell at: :", self.buyPrice * 0.99)
+
+
+                    if self.price >= (self.buyPrice * 1.01) and self.tradeState == 0:
                         self.get_balance()
 
                         if self.post_order(1, (2 * abs(self.positionSize)) + abs(self.positionSize)):
@@ -405,7 +411,7 @@ class Bot:
                         print("INFO: Quantity:", (2 * abs(self.positionSize)) + abs(self.positionSize))
                         print("---------------------------------------------")
 
-                    elif self.price <= self.buyPrice and self.tradeState == 1:
+                    elif self.price <= (self.buyPrice * 0.99) and self.tradeState == 1:
 
                         self.get_balance()
 
