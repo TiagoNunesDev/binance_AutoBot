@@ -86,7 +86,7 @@ class Bot:
                         val_str = str(getattr(row, member_def))
                         if member_def == 'symbol':
                             if str(val_str) == self.coin:
-                                return price
+                                return self.buyPrice
                         if member_def == 'entryPrice':
                             self.buyPrice = float(val_str)
 
@@ -319,7 +319,7 @@ class Bot:
                 time.sleep(2)
                 stprice = Decimal(entryPrice * 0.95)
                 stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
-                
+
                 print("loss:", quantity, stprice)
                 self.set_buy_order_take_loss(quantity,stprice)
 
