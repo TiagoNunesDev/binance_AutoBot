@@ -88,7 +88,7 @@ class Bot:
                             if str(val_str) == self.coin:
                                 return price
                         if member_def == 'entryPrice':
-                            price = float(val_str)
+                            self.buyPrice = float(val_str)
 
 
 
@@ -388,6 +388,9 @@ class Bot:
 
                 self.get_price()
 
+
+                self.get_position_entry_price()
+
                 # ---------- Continue with the current opened position  -------------
                 if self.buyStatus == 1:
 
@@ -415,6 +418,7 @@ class Bot:
 
                 # ---------- Sell the first time position -------------
                 if self.buyStatus == 0:
+
 
                     # ---------------------------------------------------------
                     # ---- sell the first order with the minimal buy order ----
