@@ -67,7 +67,6 @@ def record_loop():
                             backtest.buyStatus = 0
                         backtest.process_Price()
                         print("INFO: Bot -> ON ")
-                        print("INFO: next trade ->")
 
                     else:
                         try:
