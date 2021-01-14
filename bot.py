@@ -280,20 +280,20 @@ class Bot:
                 self.post_sell_order(quantity)
 
                 entryPrice = self.get_position_entry_price()
-                self.buyPrice = entryPrice
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
                 stprice = Decimal(entryPrice*0.99)
                 stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
 
+                print("profit:",quantity, stprice)
                 self.set_sell_order_profit(quantity, stprice)
 
                 # ---------- Set take loss -------------
                 time.sleep(2)
                 stprice = Decimal(entryPrice * 1.05)
                 stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
-
+                print("loss:", quantity, stprice)
                 self.set_sell_order_take_loss(quantity, stprice)
 
             else:
@@ -312,13 +312,15 @@ class Bot:
                 stprice = Decimal(entryPrice * 1.01)
                 stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
 
+                print("profit:", quantity, stprice)
                 self.set_buy_order_profit(quantity,stprice)
 
                 # ---------- Set take loss -------------
                 time.sleep(2)
                 stprice = Decimal(entryPrice * 0.95)
                 stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
-
+                
+                print("loss:", quantity, stprice)
                 self.set_buy_order_take_loss(quantity,stprice)
 
         except ValueError:
