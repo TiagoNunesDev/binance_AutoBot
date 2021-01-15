@@ -414,7 +414,8 @@ class Bot:
                     if self.price >= (self.buyPrice * (1.0 + (100/(self.leverage * 100)))) and self.tradeState == 0:
                         # self.get_balance()
 
-                        self.minimalBuy = Decimal((2 * abs(self.positionSize)) + abs(self.positionSize))
+                        calculation = (2 * abs(self.positionSize)) + abs(self.positionSize)
+                        self.minimalBuy = Decimal(calculation)
                         self.minimalBuy = Decimal(self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding=ROUND_HALF_UP))
 
                         if self.post_order(1, self.minimalBuy):
@@ -428,8 +429,8 @@ class Bot:
                     elif self.price <= (self.buyPrice * (1.0 - (100/(self.leverage * 100)))) and self.tradeState == 1:
 
                         # self.get_balance()
-
-                        self.minimalBuy = Decimal((2 * abs(self.positionSize)) + abs(self.positionSize))
+                        calculation = (2 * abs(self.positionSize)) + abs(self.positionSize)
+                        self.minimalBuy = Decimal(calculation)
                         self.minimalBuy = Decimal(self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding=ROUND_HALF_UP))
 
                         if self.post_order(0, self.minimalBuy):
@@ -447,8 +448,9 @@ class Bot:
 
                     # calculate the new
                     if ((self.minimalProfit * self.leverage) / self.price) > self.minimalCoinBuy:
-                        self.minimalBuy = Decimal((self.minimalProfit * self.leverage) / self.price)
-                        self.minimalBuy = Decimal(self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding=ROUND_HALF_UP))
+                        calculation = (self.minimalProfit * self.leverage) / self.price
+                        self.minimalBuy = Decimal(calculation)
+                        self.minimalBuy = Decimal(self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding= ROUND_HALF_UP))
                     else:
                         self.minimalBuy = Decimal(self.minimalCoinBuy)
 
