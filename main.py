@@ -26,12 +26,12 @@ leverage = os.environ.get('COIN_LEVERAGE')
 
 # --------------------------- Tesnet API Keys -------------------------------------------
 
-g_api_key = '9ed2810f070aa3c9378af0a828cdc46c6a20a347f9c80004e37a26f5d373e3b5'
-g_secret_key = 'c2340bebf086e113b6e3bd52f5bd17ccb201649a8f2b82804dec531a7fb16b0f'
+# g_api_key = '9ed2810f070aa3c9378af0a828cdc46c6a20a347f9c80004e37a26f5d373e3b5'
+# g_secret_key = 'c2340bebf086e113b6e3bd52f5bd17ccb201649a8f2b82804dec531a7fb16b0f'
 
 # --------------------------- Init Client -------------------------------------------
 try:
-    request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key, url='https://testnet.binancefuture.com/')
+    request_client = RequestClient(api_key=key, secret_key=secret, url='https://testnet.binancefuture.com/')
 except Exception as e:
     print("ERROR: Connecting to client")
 else:
