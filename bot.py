@@ -286,10 +286,9 @@ class Bot:
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
-                stprice = Decimal(entryPrice*0.99)
+                stprice = Decimal(entryPrice* (1.0 - (100/(self.leverage * 100))))
                 stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
 
-                print("INFO: Fee:", (entryPrice * quantity) * 0.0004)
                 print("INFO: Profit:",quantity, stprice)
                 self.set_sell_order_profit(quantity, stprice)
 
@@ -313,10 +312,9 @@ class Bot:
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
-                stprice = Decimal(entryPrice * 1.01)
+                stprice = Decimal(entryPrice * (1.0 + (100/(self.leverage * 100))))
                 stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
 
-                print("INFO: Fee:", (entryPrice * quantity) * 0.0004)
                 print("INFO: Profit:", quantity, stprice)
                 self.set_buy_order_profit(quantity,stprice)
 
@@ -455,7 +453,7 @@ class Bot:
                         self.minimalBuy = Decimal(self.minimalCoinBuy)
 
                     if self.post_order(0, self.minimalBuy):
-                        # self.positionSize = self.minimalBuy
+                        self.positionSize = self.minimalBuy
                         self.buyStatus = 1
                         self.buyPrice = self.get_position_entry_price()
                         self.tradeState = 0
