@@ -101,6 +101,7 @@ class Bot:
         try:
             self.get_open_positions(self.coin)
             self.get_balance()
+            self.change_leverage(self.coin,self.leverage)
 
             if self.positionSize != 0:
                 self.buyStatus = 1
@@ -147,7 +148,7 @@ class Bot:
     def change_leverage(self, symbol , leverage):
         try:
             sys.stdout = open(os.devnull, 'w')
-            self.client.change_initial_leverage(symbol=symbol, leverage=2)
+            self.client.change_initial_leverage(symbol=symbol, leverage=leverage)
             sys.stdout = sys.__stdout__
         except Exception as e:
             sys.stdout = sys.__stdout__

@@ -23,10 +23,7 @@ coin = os.environ.get('COIN')
 minimalQtd = os.environ.get('MINIMAL_COIN_BUY')
 minimalProfit = os.environ.get('MINIMAL_PROFIT_USD')
 leverage = os.environ.get('COIN_LEVERAGE')
-# --------------------------- Tesnet API Keys -------------------------------------------
 
-# g_api_key = '9ed2810f070aa3c9378af0a828cdc46c6a20a347f9c80004e37a26f5d373e3b5'
-# g_secret_key = 'c2340bebf086e113b6e3bd52f5bd17ccb201649a8f2b82804dec531a7fb16b0f'
 
 # --------------------------- Init Client -------------------------------------------
 try:
@@ -36,8 +33,6 @@ except Exception as e:
 else:
     print("INFO: Connected to client")
 
-# minimalQtd = 0.02
-# coin = 'BTCUSDT'
 
 backtest = Bot(request_client, coin, float(minimalQtd), float(minimalProfit), float(leverage))
 
