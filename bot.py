@@ -14,13 +14,15 @@ import sys, os
 
 class Bot:
 
-    def __init__(self,requestClient, coin, minimalcoinbuy):
+    def __init__(self,requestClient, coin, minimalcoinbuy , minimalprofit, leverage):
 
         # --- Initial variables  -----
         self.client = requestClient
         self.coin = coin
         self.minimalCoinBuy = minimalcoinbuy
-
+        self.minimalProfit  = minimalprofit
+        self.minimalBuy = 0
+        self.leverage = leverage
 
         self.buyPrice = 0
         self.buyStatus = 0
@@ -378,6 +380,7 @@ class Bot:
     # 1. reverse(s): returns the reverse of the input string
     # 2. print(s): prints the string representation of the input object
     def process_Price(self):
+        decPoint = 0
         try:
             # ---------------------------------------------------------
             # ---------- Check for current open positions -------------
@@ -407,11 +410,13 @@ class Bot:
                         print("INFO: Next sell at: :", self.buyPrice * 0.99)
                         print("---------------------------------------------")
 
+                    if self.price >= (self.buyPrice * (1.0 + (100/(self.leverage * 100)))) and self.tradeState == 0:
+                        # self.get_balance()
 
-                    if self.price >= (self.buyPrice * 1.01) and self.tradeState == 0:
-                        self.get_balance()
+                        self.minimalBuy = Decimal((2 * abs(self.positionSize)) + abs(self.positionSize))
+                        self.minimalBuy = Decimal(self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding=ROUND_HALF_UP))
 
-                        if self.post_order(1, (2 * abs(self.positionSize)) + abs(self.positionSize)):
+                        if self.post_order(1, self.minimalBuy):
                            self.tradeState = 1
 
                         print("---------------------------------------------")
@@ -419,12 +424,16 @@ class Bot:
                         print("INFO: Quantity:", (2 * abs(self.positionSize)) + abs(self.positionSize))
                         print("---------------------------------------------")
 
-                    elif self.price <= (self.buyPrice * 0.99) and self.tradeState == 1:
+                    elif self.price <= (self.buyPrice * (1.0 - (100/(self.leverage * 100)))) and self.tradeState == 1:
 
-                        self.get_balance()
+                        # self.get_balance()
 
-                        if self.post_order(0, (2 * abs(self.positionSize)) + abs(self.positionSize)):
+                        self.minimalBuy = Decimal((2 * abs(self.positionSize)) + abs(self.positionSize))
+                        self.minimalBuy = Decimal(self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding=ROUND_HALF_UP))
+
+                        if self.post_order(0, self.minimalBuy):
                             self.tradeState = 0
+
                         print("---------------------------------------------")
                         print("INFO: short at:", self.price, " Current balance:", self.available)
                         print("INFO: Quantity:", (2 * abs(self.positionSize)) + abs(self.positionSize))
@@ -435,8 +444,15 @@ class Bot:
                     # ---------------------------------------------------------
                     # ---- sell the first order with the minimal buy order ----
 
-                    if self.post_order(0, self.minimalCoinBuy):
-                        self.positionSize = self.minimalCoinBuy
+                    # calculate the new
+                    if ((self.minimalProfit * self.leverage) / self.price) > self.minimalCoinBuy:
+                        self.minimalBuy = Decimal((self.minimalProfit * self.leverage) / self.price)
+                        self.minimalBuy = Decimal(self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding=ROUND_HALF_UP))
+                    else:
+                        self.minimalBuy = Decimal(self.minimalCoinBuy)
+
+                    if self.post_order(0, self.minimalBuy):
+                        # self.positionSize = self.minimalBuy
                         self.buyStatus = 1
                         self.buyPrice = self.get_position_entry_price()
                         self.tradeState = 0

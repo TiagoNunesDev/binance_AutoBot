@@ -20,8 +20,9 @@ cors = CORS(app, resource={r"/*":{"origins": "*"}})
 key = os.environ.get('API_KEY')
 secret = os.environ.get('API_SECRET')
 coin = os.environ.get('COIN')
-minimalQtd = os.environ.get('PROFIT')
-
+minimalQtd = os.environ.get('MINIMAL_COIN_BUY')
+minimalProfit = os.environ.get('MINIMAL_PROFIT_USD')
+leverage = os.environ.get('COIN_LEVERAGE')
 # --------------------------- Tesnet API Keys -------------------------------------------
 
 # g_api_key = '9ed2810f070aa3c9378af0a828cdc46c6a20a347f9c80004e37a26f5d373e3b5'
@@ -38,7 +39,7 @@ else:
 # minimalQtd = 0.02
 # coin = 'BTCUSDT'
 
-backtest = Bot(request_client,coin,float(minimalQtd))
+backtest = Bot(request_client, coin, float(minimalQtd), float(minimalProfit), float(leverage))
 
 
 # This function provides utility functions to work with Strings
