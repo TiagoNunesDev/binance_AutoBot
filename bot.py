@@ -473,10 +473,13 @@ class Bot:
                     else:
                         self.minimalBuy = Decimal(self.minimalCoinBuy)
 
+                    self.buyPrice = 0
+                    self.sellIncrement = 0
+                    
                     if self.post_order(0, self.minimalBuy):
                         self.positionSize = self.minimalBuy
                         self.buyStatus = 1
-                        self.sellIncrement = 0
+
                         self.buyPrice = self.get_position_entry_price()
                         self.tradeState = 0
                     else:
