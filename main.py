@@ -37,6 +37,10 @@ except Exception as e:
 else:
     print("INFO: Connected to client")
 
+# coin = 'BTCUSDT'
+# minimalQtd = 0.001
+# minimalProfit = 0.5
+# leverage = 100
 
 backtest = Bot(request_client, coin, float(minimalQtd), float(minimalProfit), float(leverage))
 
@@ -55,7 +59,7 @@ def record_loop():
             dataNow = datetime.now().minute
             # check the server connection
             if dataNow != current:
-                if (dataNow % 5) == 0:
+                if (dataNow % 1) == 0:
                     result = backtest.get_servertime()
 
                     if result != 0:

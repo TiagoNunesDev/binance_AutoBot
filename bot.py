@@ -287,6 +287,8 @@ class Bot:
 
                 entryPrice = self.get_position_entry_price()
 
+                time.sleep(2)
+
                 aux = (1.0 - (100 / (self.leverage * 100))) - (self.buyPrice / aux)
                 self.sellIncrement = aux
 
@@ -315,6 +317,8 @@ class Bot:
                 # ---- get the current mark price and them apply the stop and profit ---
 
                 entryPrice = self.get_position_entry_price()
+
+                time.sleep(2)
 
                 aux = (self.buyPrice / aux) - (1.0 + (100/(self.leverage * 100)))
                 self.sellIncrement = aux
