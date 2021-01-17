@@ -281,14 +281,14 @@ class Bot:
             if type == 0:
 
                 aux = self.buyPrice
-                
+
                 self.cancel_all_orders()
                 self.post_sell_order(quantity)
 
+                entryPrice = self.get_position_entry_price()
+
                 aux = (1.0 - (100 / (self.leverage * 100))) - (self.buyPrice / aux)
                 self.sellIncrement = aux
-
-                entryPrice = self.get_position_entry_price()
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
@@ -312,12 +312,13 @@ class Bot:
                 self.cancel_all_orders()
                 self.post_buy_order(quantity)
 
-                aux = (self.buyPrice / aux) - (1.0 + (100/(self.leverage * 100)))
-                self.sellIncrement = aux
-
                 # ---- get the current mark price and them apply the stop and profit ---
 
                 entryPrice = self.get_position_entry_price()
+
+                aux = (self.buyPrice / aux) - (1.0 + (100/(self.leverage * 100)))
+                self.sellIncrement = aux
+
                 self.buyPrice = entryPrice
 
                 # ---------- Set take profit  -------------
