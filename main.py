@@ -32,6 +32,7 @@ leverage = os.environ.get('COIN_LEVERAGE')
 # --------------------------- Init Client -------------------------------------------
 try:
     request_client = RequestClient(api_key=key, secret_key=secret, url='https://testnet.binancefuture.com/')
+    # request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key, url='https://testnet.binancefuture.com/')
 except Exception as e:
     print("ERROR: Connecting to client")
 else:

@@ -29,6 +29,7 @@ class Bot:
         self.buyStatus = 0
         self.tradeState = 0
 
+        self.aux = 0
         # Coin for trading variables
 
         self.price = 0
@@ -280,17 +281,20 @@ class Bot:
         try:
             if type == 0:
 
-                aux = self.buyPrice
+                self.aux = self.buyPrice
 
                 self.cancel_all_orders()
                 self.post_sell_order(quantity)
 
                 entryPrice = self.get_position_entry_price()
 
-                time.sleep(2)
+                time.sleep(1)
 
-                aux = (1.0 - (100 / (self.leverage * 100))) - (self.buyPrice / aux)
-                self.sellIncrement = aux
+                if (self.aux != 0):
+                    self.aux = (1.0 - (100 / (self.leverage * 100))) - (self.buyPrice / self.aux)
+                    self.sellIncrement = abs(self.aux)
+
+                self.sellIncrement = 0
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
@@ -309,7 +313,7 @@ class Bot:
 
             else:
                 # self.post_single_order(type, quantity)
-                aux = self.buyPrice
+                self.aux = self.buyPrice
 
                 self.cancel_all_orders()
                 self.post_buy_order(quantity)
@@ -318,10 +322,12 @@ class Bot:
 
                 entryPrice = self.get_position_entry_price()
 
-                time.sleep(2)
+                time.sleep(1)
 
-                aux = (self.buyPrice / aux) - (1.0 + (100/(self.leverage * 100)))
-                self.sellIncrement = aux
+                if(self.aux != 0):
+                    self.aux = (self.buyPrice / self.aux) - (1.0 + (100/(self.leverage * 100)))
+                    self.sellIncrement = abs(self.aux)
+
 
                 self.buyPrice = entryPrice
 
