@@ -23,6 +23,7 @@ class Bot:
         self.minimalProfit  = minimalprofit
         self.minimalBuy = 0
         self.leverage = leverage
+        self.sellIncrement = 0
 
         self.buyPrice = 0
         self.buyStatus = 0
@@ -275,18 +276,23 @@ class Bot:
         result = 0
         entryPrice = 0
         stprice  = 0
-
+        aux = 0
         try:
             if type == 0:
 
+                aux = self.buyPrice
+                
                 self.cancel_all_orders()
                 self.post_sell_order(quantity)
+
+                aux = (1.0 - (100 / (self.leverage * 100))) - (self.buyPrice / aux)
+                self.sellIncrement = aux
 
                 entryPrice = self.get_position_entry_price()
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
-                stprice = Decimal(entryPrice* (1.0 - (100/(self.leverage * 100))))
+                stprice = Decimal(entryPrice* (1.0 - (100/(self.leverage * 100)) - self.sellIncrement))
                 stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
 
                 print("INFO: Profit:",quantity, stprice)
@@ -301,9 +307,13 @@ class Bot:
 
             else:
                 # self.post_single_order(type, quantity)
+                aux = self.buyPrice
 
                 self.cancel_all_orders()
                 self.post_buy_order(quantity)
+
+                aux = (self.buyPrice / aux) - (1.0 + (100/(self.leverage * 100)))
+                self.sellIncrement = aux
 
                 # ---- get the current mark price and them apply the stop and profit ---
 
@@ -312,7 +322,7 @@ class Bot:
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
-                stprice = Decimal(entryPrice * (1.0 + (100/(self.leverage * 100))))
+                stprice = Decimal(entryPrice * (1.0 + (100/(self.leverage * 100)) + self.sellIncrement))
                 stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
 
                 print("INFO: Profit:", quantity, stprice)
@@ -409,7 +419,7 @@ class Bot:
                         print("INFO: Next sell at: :", self.buyPrice * 0.99)
                         print("---------------------------------------------")
 
-                    if self.price >= (self.buyPrice * (1.0 + (100/(self.leverage * 100)))) and self.tradeState == 0:
+                    if self.price >= (self.buyPrice * (1.0 + (100/(self.leverage * 100))) + self.sellIncrement) and self.tradeState == 0:
                         # self.get_balance()
 
                         calculation = (2 * abs(self.positionSize)) + abs(self.positionSize)
@@ -424,7 +434,7 @@ class Bot:
                         print("INFO: Quantity:", (2 * abs(self.positionSize)) + abs(self.positionSize))
                         print("---------------------------------------------")
 
-                    elif self.price <= (self.buyPrice * (1.0 - (100/(self.leverage * 100)))) and self.tradeState == 1:
+                    elif self.price <= (self.buyPrice * (1.0 - (100/(self.leverage * 100)) - self.sellIncrement)) and self.tradeState == 1:
 
                         # self.get_balance()
                         calculation = (2 * abs(self.positionSize)) + abs(self.positionSize)
@@ -455,6 +465,7 @@ class Bot:
                     if self.post_order(0, self.minimalBuy):
                         self.positionSize = self.minimalBuy
                         self.buyStatus = 1
+                        self.sellIncrement = 0
                         self.buyPrice = self.get_position_entry_price()
                         self.tradeState = 0
                     else:
