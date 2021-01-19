@@ -475,7 +475,7 @@ class Bot:
 
                     self.buyPrice = 0
                     self.sellIncrement = 0
-                    
+
                     if self.post_order(0, self.minimalBuy):
                         self.positionSize = self.minimalBuy
                         self.buyStatus = 1

@@ -22,6 +22,7 @@
     <list default="true" id="33a4a072-e7d5-4d32-a7ef-1098d7cabcfb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -144,10 +145,11 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="184" y="9" key="SettingsEditor/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610139630978" />
-    <state x="390" y="97" width="823" height="596" key="find.popup" timestamp="1610223622591">
+    <state x="390" y="97" width="823" height="596" key="find.popup" timestamp="1611092117098">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="390" y="97" width="823" height="596" key="find.popup/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610223622591" />
+    <state x="390" y="97" width="823" height="596" key="find.popup/0.0.1366.728@0.0.1366.728" timestamp="1611092117098" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

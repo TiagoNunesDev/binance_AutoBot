@@ -31,7 +31,8 @@ leverage = os.environ.get('COIN_LEVERAGE')
 
 # --------------------------- Init Client -------------------------------------------
 try:
-    request_client = RequestClient(api_key=key, secret_key=secret, url='https://testnet.binancefuture.com/')
+    # request_client = RequestClient(api_key=key, secret_key=secret, url='https://testnet.binancefuture.com/')
+    request_client = RequestClient(api_key=key, secret_key=secret)
     # request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key, url='https://testnet.binancefuture.com/')
 except Exception as e:
     print("ERROR: Connecting to client")
@@ -89,6 +90,7 @@ def record_loop():
     # This function provides utility functions to work with Strings
     # 1. reverse(s): returns the reverse of the input string
     # 2. print(s): prints the string representation of the input object
+
 @app.route("/", methods=['GET'])
 def index():
     return "<h1>Hello World!</h1>"
