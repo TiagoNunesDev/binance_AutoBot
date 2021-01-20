@@ -294,8 +294,6 @@ class Bot:
                     self.aux = (1.0 - (100 / (self.leverage * 100))) - (self.buyPrice / self.aux)
                     self.sellIncrement = abs(self.aux)
 
-                self.sellIncrement = 0
-
                 # ---------- Set take profit  -------------
                 time.sleep(2)
                 stprice = Decimal(entryPrice* (1.0 - (100/(self.leverage * 100)) - self.sellIncrement))
