@@ -421,11 +421,11 @@ class Bot:
 
                     if(self.tradeState == 0):
                         print("---------------------------------------------")
-                        print("INFO: Next buy at: :", self.buyPrice * 1.01)
+                        print("INFO: Next buy at: :", (self.buyPrice * ((1.0 + (100/(self.leverage * 100))) + self.sellIncrement)))
                         print("---------------------------------------------")
                     elif(self.tradeState == 1):
                         print("---------------------------------------------")
-                        print("INFO: Next sell at: :", self.buyPrice * 0.99)
+                        print("INFO: Next sell at: :", (self.buyPrice * ((1.0 - (100/(self.leverage * 100))) - self.sellIncrement)))
                         print("---------------------------------------------")
 
                     if self.price >= (self.buyPrice * ((1.0 + (100/(self.leverage * 100))) + self.sellIncrement)) and self.tradeState == 0:
