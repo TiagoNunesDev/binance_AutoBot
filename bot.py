@@ -273,11 +273,8 @@ class Bot:
     # This function provides utility functions to work with Strings
     # 1. reverse(s): returns the reverse of the input string
     # 2. print(s): prints the string representation of the input object
+
     def post_order(self,type,quantity):
-        result = 0
-        entryPrice = 0
-        stprice  = 0
-        aux = 0
         try:
             if type == 0:
 
@@ -290,7 +287,7 @@ class Bot:
 
                 time.sleep(1)
 
-                if (self.aux != 0):
+                if self.aux != 0:
                     self.aux = (1.0 - (100 / (self.leverage * 100))) - (self.buyPrice / self.aux)
                     self.sellIncrement = abs(self.aux)
 
@@ -299,13 +296,14 @@ class Bot:
                 stprice = Decimal(entryPrice* (1.0 - (100/(self.leverage * 100)) - self.sellIncrement))
                 stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
 
-                print("INFO: Profit:",quantity, stprice)
+                print("INFO: Profit:", quantity, stprice)
                 self.set_sell_order_profit(quantity, stprice)
 
                 # ---------- Set take loss -------------
                 time.sleep(2)
                 stprice = Decimal(entryPrice * 1.05)
                 stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
+
                 print("INFO: Loss:", quantity, stprice)
                 self.set_sell_order_take_loss(quantity, stprice)
 
@@ -322,12 +320,9 @@ class Bot:
 
                 time.sleep(1)
 
-                if(self.aux != 0):
+                if self.aux != 0:
                     self.aux = (self.buyPrice / self.aux) - (1.0 + (100/(self.leverage * 100)))
                     self.sellIncrement = abs(self.aux)
-
-
-                self.buyPrice = entryPrice
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
@@ -398,95 +393,91 @@ class Bot:
     # 1. reverse(s): returns the reverse of the input string
     # 2. print(s): prints the string representation of the input object
     def process_Price(self):
-        decPoint = 0
+
         try:
-            # ---------------------------------------------------------
-            # ---------- Check for current open positions -------------
-
-            # if self.get_open_positions(self.coin):
-            #     if self.positionSize == 0:
-            #         self.buyStatus = 0
-            #     else:
-            #         self.buyStatus = 0
-
-                # ---------- Check for current price -------------
-
-                self.get_price()
 
 
-                self.get_position_entry_price()
+            # ------ Get the current coin price -----------
+            self.get_price()
 
-                # ---------- Continue with the current opened position  -------------
-                if self.buyStatus == 1:
+            # ------ Get the order price -----------
+            self.get_position_entry_price()
 
-                    if(self.tradeState == 0):
-                        print("---------------------------------------------")
-                        print("INFO: Next buy at: :", (self.buyPrice * ((1.0 + (100/(self.leverage * 100))) + self.sellIncrement)))
-                        print("---------------------------------------------")
-                    elif(self.tradeState == 1):
-                        print("---------------------------------------------")
-                        print("INFO: Next sell at: :", (self.buyPrice * ((1.0 - (100/(self.leverage * 100))) - self.sellIncrement)))
-                        print("---------------------------------------------")
+            # ---------- Continue with the current opened position  -------------
+            if self.buyStatus == 1:
 
-                    if self.price >= (self.buyPrice * ((1.0 + (100/(self.leverage * 100))) + self.sellIncrement)) and self.tradeState == 0:
-                        # self.get_balance()
+                if self.tradeState == 0:
+                    print("---------------------------------------------")
+                    print("INFO: Next buy at: :", (self.buyPrice * ((1.0 + (100 / (self.leverage * 100))) + self.sellIncrement)))
+                    print("---------------------------------------------")
+                elif self.tradeState == 1:
+                    print("---------------------------------------------")
+                    print("INFO: Next sell at: :", (self.buyPrice * ((1.0 - (100 / (self.leverage * 100))) - self.sellIncrement)))
+                    print("---------------------------------------------")
 
-                        calculation = (2 * abs(self.positionSize)) + abs(self.positionSize)
-                        self.minimalBuy = Decimal(calculation)
-                        self.minimalBuy = Decimal(self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding=ROUND_HALF_UP))
+                if self.price >= (self.buyPrice * ((1.0 + (100 / (self.leverage * 100))) + self.sellIncrement)) and self.tradeState == 0:
+                    # self.get_balance()
 
-                        if self.post_order(1, self.minimalBuy):
-                           self.tradeState = 1
+                    calculation = (2 * abs(self.positionSize)) + abs(self.positionSize)
+                    self.minimalBuy = Decimal(calculation)
+                    self.minimalBuy = Decimal(self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding=ROUND_HALF_UP))
 
-                        print("---------------------------------------------")
-                        print("INFO: Long at:", self.price, " Current balance:", self.available)
-                        print("INFO: Quantity:", (2 * abs(self.positionSize)) + abs(self.positionSize))
-                        print("---------------------------------------------")
+                    if self.post_order(1, self.minimalBuy):
+                        self.tradeState = 1
 
-                    elif self.price <= (self.buyPrice * ((1.0 - (100/(self.leverage * 100))) - self.sellIncrement)) and self.tradeState == 1:
+                    print("---------------------------------------------")
+                    print("INFO: Long at:", self.price, " Current balance:", self.available)
+                    print("INFO: Quantity:", (2 * abs(self.positionSize)) + abs(self.positionSize))
+                    print("---------------------------------------------")
 
-                        # self.get_balance()
-                        calculation = (2 * abs(self.positionSize)) + abs(self.positionSize)
-                        self.minimalBuy = Decimal(calculation)
-                        self.minimalBuy = Decimal(self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding=ROUND_HALF_UP))
+                elif self.price <= (self.buyPrice * ((1.0 - (100 / (self.leverage * 100))) - self.sellIncrement)) and self.tradeState == 1:
 
-                        if self.post_order(0, self.minimalBuy):
-                            self.tradeState = 0
-
-                        print("---------------------------------------------")
-                        print("INFO: short at:", self.price, " Current balance:", self.available)
-                        print("INFO: Quantity:", (2 * abs(self.positionSize)) + abs(self.positionSize))
-                        print("---------------------------------------------")
-
-                # ---------- Sell the first time position -------------
-                if self.buyStatus == 0:
-                    # ---------------------------------------------------------
-                    # ---- sell the first order with the minimal buy order ----
-
-                    # calculate the new
-                    if ((self.minimalProfit * self.leverage) / self.price) > self.minimalCoinBuy:
-                        calculation = (self.minimalProfit * self.leverage) / self.price
-                        self.minimalBuy = Decimal(calculation)
-                        self.minimalBuy = Decimal(self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding= ROUND_HALF_UP))
-                    else:
-                        self.minimalBuy = Decimal(self.minimalCoinBuy)
-
-                    self.buyPrice = 0
-                    self.sellIncrement = 0
+                    # self.get_balance()
+                    calculation = (2 * abs(self.positionSize)) + abs(self.positionSize)
+                    self.minimalBuy = Decimal(calculation)
+                    self.minimalBuy = Decimal(self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding=ROUND_HALF_UP))
 
                     if self.post_order(0, self.minimalBuy):
-                        self.positionSize = self.minimalBuy
-                        self.buyStatus = 1
-
-                        self.buyPrice = self.get_position_entry_price()
                         self.tradeState = 0
-                    else:
-                        self.buyStatus = 0
 
                     print("---------------------------------------------")
-                    print("ORDER SELL :", self.coin)
-                    print("Quantity: ", self.positionSize)
+                    print("INFO: short at:", self.price, " Current balance:", self.available)
+                    print("INFO: Quantity:", (2 * abs(self.positionSize)) + abs(self.positionSize))
                     print("---------------------------------------------")
+
+            # ---------- Sell the first time position -------------
+            if self.buyStatus == 0:
+                # ---------------------------------------------------------
+                # ---- sell the first order with the minimal buy order ----
+
+                # ---------------------------------------------------------------
+                # calculate if the investiment is bigger than minimal investiment
+                if ((self.minimalProfit * self.leverage) / self.price) > self.minimalCoinBuy:
+                    calculation = (self.minimalProfit * self.leverage) / self.price
+                    self.minimalBuy = Decimal(calculation)
+                    self.minimalBuy = Decimal(
+                        self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding=ROUND_HALF_UP))
+                else:
+                    self.minimalBuy = Decimal(self.minimalCoinBuy)
+
+                self.buyPrice = 0
+                self.sellIncrement = 0
+
+                # try to place order
+                if self.post_order(0, self.minimalBuy):
+
+                    self.positionSize = self.minimalBuy
+                    self.buyStatus = 1
+
+                    self.buyPrice = self.get_position_entry_price()
+                    self.tradeState = 0
+                else:
+                    self.buyStatus = 0
+
+                print("---------------------------------------------")
+                print("ORDER SELL :", self.coin)
+                print("Quantity: ", self.positionSize)
+                print("---------------------------------------------")
 
         except ValueError:
             print(ValueError)
