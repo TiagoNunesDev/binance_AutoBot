@@ -428,7 +428,7 @@ class Bot:
                         print("INFO: Next sell at: :", self.buyPrice * 0.99)
                         print("---------------------------------------------")
 
-                    if self.price >= (self.buyPrice * (1.0 + (100/(self.leverage * 100))) + self.sellIncrement)) and self.tradeState == 0:
+                    if self.price >= (self.buyPrice * ((1.0 + (100/(self.leverage * 100))) + self.sellIncrement)) and self.tradeState == 0:
                         # self.get_balance()
 
                         calculation = (2 * abs(self.positionSize)) + abs(self.positionSize)
@@ -443,7 +443,7 @@ class Bot:
                         print("INFO: Quantity:", (2 * abs(self.positionSize)) + abs(self.positionSize))
                         print("---------------------------------------------")
 
-                    elif self.price <= (self.buyPrice * (1.0 - (100/(self.leverage * 100))) - self.sellIncrement)) and self.tradeState == 1:
+                    elif self.price <= (self.buyPrice * ((1.0 - (100/(self.leverage * 100))) - self.sellIncrement)) and self.tradeState == 1:
 
                         # self.get_balance()
                         calculation = (2 * abs(self.positionSize)) + abs(self.positionSize)
