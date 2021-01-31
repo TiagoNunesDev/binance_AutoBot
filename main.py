@@ -13,7 +13,6 @@ import time
 import sys, os
 import logging
 from bot import Bot
-import numpy
 
 app = Flask(__name__)
 cors = CORS(app, resource={r"/*":{"origins": "*"}})
