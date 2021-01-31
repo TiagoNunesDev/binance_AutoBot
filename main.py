@@ -8,7 +8,7 @@ from decimal import Decimal
 from flask import Flask
 from flask_cors import CORS
 from multiprocessing import Process, Value
-import  math
+import math
 import time
 import sys, os
 import logging
