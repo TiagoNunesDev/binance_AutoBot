@@ -14,7 +14,6 @@ import sys, os
 import logging
 from bot import Bot
 import numpy
-import talib
 
 app = Flask(__name__)
 cors = CORS(app, resource={r"/*":{"origins": "*"}})
