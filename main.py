@@ -13,6 +13,8 @@ import time
 import sys, os
 import logging
 from bot import Bot
+import numpy
+import talib
 
 app = Flask(__name__)
 cors = CORS(app, resource={r"/*":{"origins": "*"}})
@@ -28,12 +30,15 @@ leverage = os.environ.get('COIN_LEVERAGE')
 
 # g_api_key = '9ed2810f070aa3c9378af0a828cdc46c6a20a347f9c80004e37a26f5d373e3b5'
 # g_secret_key = 'c2340bebf086e113b6e3bd52f5bd17ccb201649a8f2b82804dec531a7fb16b0f'
-
+# coin = 'BTCUSDT'
+# minimalQtd = 0.001
+# minimalProfit = 0.35
+# leverage = 100
 # --------------------------- Init Client -------------------------------------------
 try:
     # request_client = RequestClient(api_key=key, secret_key=secret, url='https://testnet.binancefuture.com/')
     request_client = RequestClient(api_key=key, secret_key=secret,  url='https://fapi.binance.com')
-    # request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key, url='https://testnet.binancefuture.com/')
+    #  request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key, url='https://testnet.binancefuture.com/')
 except Exception as e:
     print("ERROR: Connecting to client")
 else:
@@ -46,6 +51,15 @@ else:
 
 backtest = Bot(request_client, coin, float(minimalQtd), float(minimalProfit), float(leverage))
 
+# try:
+#
+#     close = numpy.random.random(100)
+#     print(close)
+#     moving_average = talib.RSI(close)
+#
+#     print(moving_average)
+# except Exception as e:
+#     print("EROOR")
 
 # This function provides utility functions to work with Strings
 # 1. reverse(s): returns the reverse of the input string

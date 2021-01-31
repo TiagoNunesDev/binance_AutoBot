@@ -11,6 +11,7 @@ from multiprocessing import Process, Value
 import  math
 import time
 import sys, os
+import talib
 
 class Bot:
 
@@ -294,7 +295,7 @@ class Bot:
                 # ---------- Set take profit  -------------
                 time.sleep(2)
                 stprice = Decimal(entryPrice* (1.0 - (100/(self.leverage * 100)) - self.sellIncrement))
-                stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
+                stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
 
                 print("INFO: Profit:", quantity, stprice)
                 self.set_sell_order_profit(quantity, stprice)
@@ -302,7 +303,7 @@ class Bot:
                 # ---------- Set take loss -------------
                 time.sleep(2)
                 stprice = Decimal(entryPrice * (1.05 + self.sellIncrement) )
-                stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
+                stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
 
                 print("INFO: Loss:", quantity, stprice)
                 self.set_sell_order_take_loss(quantity, stprice)
@@ -327,7 +328,7 @@ class Bot:
                 # ---------- Set take profit  -------------
                 time.sleep(2)
                 stprice = Decimal(entryPrice * (1.0 + (100/(self.leverage * 100)) + self.sellIncrement))
-                stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
+                stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
 
                 print("INFO: Profit:", quantity, stprice)
                 self.set_buy_order_profit(quantity,stprice)
@@ -335,7 +336,7 @@ class Bot:
                 # ---------- Set take loss -------------
                 time.sleep(2)
                 stprice = Decimal(entryPrice * (0.95 - self.sellIncrement))
-                stprice = Decimal(stprice.quantize(Decimal('.01'), rounding=ROUND_HALF_UP))
+                stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
 
                 print("INFO: Loss:", quantity, stprice)
                 self.set_buy_order_take_loss(quantity,stprice)
@@ -455,8 +456,12 @@ class Bot:
                 if ((self.minimalProfit * self.leverage) / self.price) > self.minimalCoinBuy:
                     calculation = (self.minimalProfit * self.leverage) / self.price
                     self.minimalBuy = Decimal(calculation)
-                    self.minimalBuy = Decimal(
-                        self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding=ROUND_HALF_UP))
+
+                    if self.minimalCoinBuy > 0.1:
+                        self.minimalBuy = Decimal(self.minimalBuy.quantize(Decimal(str(0)), rounding=ROUND_HALF_UP))
+                    else:
+                        self.minimalBuy = Decimal(self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding=ROUND_HALF_UP))
+
                 else:
                     self.minimalBuy = Decimal(self.minimalCoinBuy)
 
