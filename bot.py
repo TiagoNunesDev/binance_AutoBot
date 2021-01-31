@@ -11,7 +11,6 @@ from multiprocessing import Process, Value
 import  math
 import time
 import sys, os
-import talib
 
 class Bot:
 
