@@ -287,13 +287,13 @@ class Bot:
 
                 time.sleep(1)
 
-                if self.aux != 0:
-                    self.aux = (1.0 - (100 / (self.leverage * 100))) - (self.buyPrice / self.aux)
-                    self.sellIncrement = abs(self.aux)
+                # if self.aux != 0:
+                #     self.aux = (1.0 - (100 / (self.leverage * 100))) - (self.buyPrice / self.aux)
+                #     self.sellIncrement = abs(self.aux)
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
-                stprice = Decimal(entryPrice* (1.0 - (100/(self.leverage * 100)) - self.sellIncrement))
+                stprice = Decimal(entryPrice * (1.0 - (100/(self.leverage * 100))))
                 stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
 
                 print("INFO: Profit:", quantity, stprice)
@@ -301,7 +301,7 @@ class Bot:
 
                 # ---------- Set take loss -------------
                 time.sleep(2)
-                stprice = Decimal(entryPrice * (1.07 + self.sellIncrement) )
+                stprice = Decimal(entryPrice * 1.05 )
                 stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
 
                 print("INFO: Loss:", quantity, stprice)
@@ -320,13 +320,13 @@ class Bot:
 
                 time.sleep(1)
 
-                if self.aux != 0:
-                    self.aux = (self.buyPrice / self.aux) - (1.0 + (100/(self.leverage * 100)))
-                    self.sellIncrement = abs(self.aux)
+                # if self.aux != 0:
+                #     self.aux = (self.buyPrice / self.aux) - (1.0 + (100/(self.leverage * 100)))
+                #     self.sellIncrement = abs(self.aux)
 
                 # ---------- Set take profit  -------------
                 time.sleep(2)
-                stprice = Decimal(entryPrice * (1.0 + (100/(self.leverage * 100)) + self.sellIncrement))
+                stprice = Decimal(entryPrice * (1.0 + (100/(self.leverage * 100))))
                 stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
 
                 print("INFO: Profit:", quantity, stprice)
@@ -334,7 +334,7 @@ class Bot:
 
                 # ---------- Set take loss -------------
                 time.sleep(2)
-                stprice = Decimal(entryPrice * (0.93 - self.sellIncrement))
+                stprice = Decimal(entryPrice * 0.95 )
                 stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
 
                 print("INFO: Loss:", quantity, stprice)
@@ -408,17 +408,19 @@ class Bot:
 
                 if self.tradeState == 0:
                     print("---------------------------------------------")
-                    print("INFO: Next buy at: :", (self.buyPrice * ((1.0 + (100 / (self.leverage * 100))) + self.sellIncrement)))
+                    print("INFO: Next buy at: :", (self.buyPrice * (1.0 + (100 / (self.leverage * 100)))))
                     print("---------------------------------------------")
                 elif self.tradeState == 1:
                     print("---------------------------------------------")
-                    print("INFO: Next sell at: :", (self.buyPrice * ((1.0 - (100 / (self.leverage * 100))) - self.sellIncrement)))
+                    print("INFO: Next sell at: :", (self.buyPrice * (1.0 - (100 / (self.leverage * 100)))))
                     print("---------------------------------------------")
 
-                if self.price >= (self.buyPrice * ((1.0 + (100 / (self.leverage * 100))) + self.sellIncrement)) and self.tradeState == 0:
-                    # self.get_balance()
+                if self.price >= (self.buyPrice * (1.0 + (100 / (self.leverage * 100)))) and self.tradeState == 0:
+
+                    self.positionSize = ((((self.price / self.buyPrice) - 1.0133)*self.leverage) + 1.0) * abs(self.positionSize)
 
                     calculation = (2 * abs(self.positionSize)) + abs(self.positionSize)
+
                     self.minimalBuy = Decimal(calculation)
                     self.minimalBuy = Decimal(self.minimalBuy.quantize(Decimal(str(self.minimalCoinBuy)), rounding=ROUND_HALF_UP))
 
@@ -430,7 +432,9 @@ class Bot:
                     print("INFO: Quantity:", (2 * abs(self.positionSize)) + abs(self.positionSize))
                     print("---------------------------------------------")
 
-                elif self.price <= (self.buyPrice * ((1.0 - (100 / (self.leverage * 100))) - self.sellIncrement)) and self.tradeState == 1:
+                elif self.price <= (self.buyPrice * (1.0 - (100 / (self.leverage * 100)))) and self.tradeState == 1:
+
+                    self.positionSize = (((0.985 - (self.price / self.buyPrice)) * self.leverage)+1.0) * abs(self.positionSize)
 
                     # self.get_balance()
                     calculation = (2 * abs(self.positionSize)) + abs(self.positionSize)
@@ -465,7 +469,7 @@ class Bot:
                     self.minimalBuy = Decimal(self.minimalCoinBuy)
 
                 self.buyPrice = 0
-                self.sellIncrement = 0
+                # self.sellIncrement = 0
 
                 # try to place order
                 if self.post_order(0, self.minimalBuy):
