@@ -23,6 +23,7 @@ coin = os.environ.get('COIN')
 minimalQtd = os.environ.get('MINIMAL_COIN_BUY')
 minimalProfit = os.environ.get('MINIMAL_PROFIT_USD')
 leverage = os.environ.get('COIN_LEVERAGE')
+minimalMove = os.environ.get('COIN_MIN_MOVE')
 
 # --------------------------- Tesnet API Keys -------------------------------------------
 
@@ -47,7 +48,7 @@ else:
 # minimalProfit = 0.5
 # leverage = 100
 
-backtest = Bot(request_client, coin, float(minimalQtd), float(minimalProfit), float(leverage))
+backtest = Bot(request_client, coin, float(minimalQtd), float(minimalProfit), float(leverage), float(minimalMove))
 
 # try:
 #
