@@ -12,8 +12,6 @@ import  math
 import time
 import sys, os
 
-import talib
-import numpy
 
 class Bot:
 
