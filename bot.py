@@ -13,6 +13,7 @@ import time
 import sys, os
 
 
+
 class Bot:
 
     def __init__(self,requestClient, coin, minimalcoinbuy , minimalprofit, leverage, minimalMove):
@@ -290,8 +291,7 @@ class Bot:
                 time.sleep(1)
 
 
-                # stprice = Decimal(entryPrice * (1.0 - (100/(self.leverage * 100))))
-                stprice = Decimal(entryPrice * (1.0 - 0.004))
+                stprice = Decimal(entryPrice * (1.0 - (100/(self.leverage * 100))))
                 stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
                 # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
 
@@ -300,7 +300,7 @@ class Bot:
 
                 # ---------- Set take loss -------------
                 time.sleep(2)
-                stprice = Decimal(entryPrice * 1.07)
+                stprice = Decimal(entryPrice * 1.05)
                 stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
                 # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
 
@@ -321,8 +321,7 @@ class Bot:
                 time.sleep(1)
 
 
-                # stprice = Decimal(entryPrice * (1.0 + (100/(self.leverage * 100))))
-                stprice = Decimal(entryPrice * (1.0 + 0.004))
+                stprice = Decimal(entryPrice * (1.0 + (100/(self.leverage * 100))))
                 stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
                 # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
 
@@ -331,7 +330,7 @@ class Bot:
 
                 # ---------- Set take loss -------------
                 time.sleep(2)
-                stprice = Decimal(entryPrice * 0.93)
+                stprice = Decimal(entryPrice * 0.95)
                 stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
                 # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
 
@@ -413,13 +412,10 @@ class Bot:
                     print("INFO: Next sell at: :", (self.buyPrice * (1.0 - (100 / (self.leverage * 100)))))
                     print("---------------------------------------------")
 
-                # if self.price >= (self.buyPrice * (1.0 + (100 / (self.leverage * 100)))) and self.tradeState == 0:
+                if self.price >= (self.buyPrice * (1.0 + (100 / (self.leverage * 100)))) and self.tradeState == 0:
 
-                if self.price >= (self.buyPrice * (1.0 + 0.004)) and self.tradeState == 0:
+                    self.positionSize = ((((self.price / self.buyPrice) - 1.0133)*self.leverage) + 1.0) * abs(self.positionSize)
 
-                    # self.positionSize = ((((self.price / self.buyPrice) - 1.0133)*self.leverage) + 1.0) * abs(self.positionSize)
-
-                    self.positionSize = ((((self.price / self.buyPrice) - 1.004) * self.leverage) + 1.0) * abs(self.positionSize)
 
 
                     calculation = (2 * abs(self.positionSize)) + abs(self.positionSize)
@@ -439,13 +435,9 @@ class Bot:
                     print("INFO: Quantity:", (2 * abs(self.positionSize)) + abs(self.positionSize))
                     print("---------------------------------------------")
 
-                # elif self.price <= (self.buyPrice * (1.0 - (100 / (self.leverage * 100)))) and self.tradeState == 1:
+                elif self.price <= (self.buyPrice * (1.0 - (100 / (self.leverage * 100)))) and self.tradeState == 1:
 
-                elif self.price <= (self.buyPrice * (1.0 - (0.004))) and self.tradeState == 1:
-
-                    # self.positionSize = (((0.985 - (self.price / self.buyPrice)) * self.leverage)+1.0) * abs(self.positionSize)
-
-                    self.positionSize = (((0.996 - (self.price / self.buyPrice)) * self.leverage) + 1.0) * abs(self.positionSize)
+                    self.positionSize = (((0.985 - (self.price / self.buyPrice)) * self.leverage)+1.0) * abs(self.positionSize)
 
                     # self.get_balance()
                     calculation = (2 * abs(self.positionSize)) + abs(self.positionSize)
