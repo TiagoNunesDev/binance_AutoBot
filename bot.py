@@ -480,13 +480,13 @@ class Bot:
                 # self.sellIncrement = 0
 
                 # try to place order
-                if self.post_order(0, self.minimalBuy):
+                if self.post_order(1, self.minimalBuy):
 
                     self.positionSize = self.minimalBuy
                     self.buyStatus = 1
 
                     self.buyPrice = self.get_position_entry_price()
-                    self.tradeState = 0
+                    self.tradeState = 1
                 else:
                     self.buyStatus = 0
 
