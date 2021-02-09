@@ -287,19 +287,14 @@ class Bot:
             sys.stdout = sys.__stdout__
             print(e)
         else:
-            if(self.positionSize != 0):
+            if self.positionSize != 0:
                 self.nmbOpenOrders = 0
                 for idx, row in enumerate(data):
                         members = [attr for attr in dir(row) if not callable(attr) and not attr.startswith("__")]
                         for member_def in members:
                             self.nmbOpenOrders = idx + 1
 
-                            # val_str = str(getattr(row, member_def))
-                            # if member_def == 'availableBalance':
-                            #     self.available = float(val_str)
-                            # if member_def == 'balance':
-                            #     self.balance = float(val_str)
-            print(self.nmbOpenOrders)
+
 
     # This function provides utility functions to work with Strings
     # 1. reverse(s): returns the reverse of the input string
