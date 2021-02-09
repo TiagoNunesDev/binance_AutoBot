@@ -77,14 +77,17 @@ def record_loop():
             dataNow = datetime.now().minute
             # check the server connection
             if dataNow != current:
-                if (dataNow % 5) == 0:
+                if (dataNow % 1) == 0:
                     result = backtest.get_servertime()
 
                     if result != 0:
                         current = dataNow
 
                         backtest.positionSize = 0
+
                         backtest.get_open_positions(backtest.coin)
+                        backtest.get_open_orders()
+
                         if backtest.positionSize == 0:
                             backtest.buyStatus = 0
                         backtest.process_Price()

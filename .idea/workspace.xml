@@ -22,6 +22,7 @@
     <list default="true" id="33a4a072-e7d5-4d32-a7ef-1098d7cabcfb" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,25 +101,29 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1345" height="164" key="GridCell.Tab.0.bottom" timestamp="1612123735749">
-      <screen x="0" y="0" width="1366" height="728" />
+    <state width="1419" height="220" key="GridCell.Tab.0.bottom" timestamp="1612905956109">
+      <screen x="1366" y="0" width="1440" height="860" />
     </state>
     <state width="1345" height="164" key="GridCell.Tab.0.bottom/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1612123735749" />
+    <state width="1419" height="220" key="GridCell.Tab.0.bottom/0.0.1366.728/1366.0.1440.860@1366.0.1440.860" timestamp="1612905956109" />
     <state width="1345" height="163" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1610750106108" />
-    <state width="1345" height="164" key="GridCell.Tab.0.center" timestamp="1612123735749">
-      <screen x="0" y="0" width="1366" height="728" />
+    <state width="1419" height="220" key="GridCell.Tab.0.center" timestamp="1612905956109">
+      <screen x="1366" y="0" width="1440" height="860" />
     </state>
     <state width="1345" height="164" key="GridCell.Tab.0.center/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1612123735749" />
+    <state width="1419" height="220" key="GridCell.Tab.0.center/0.0.1366.728/1366.0.1440.860@1366.0.1440.860" timestamp="1612905956109" />
     <state width="1345" height="163" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1610750106108" />
-    <state width="1345" height="164" key="GridCell.Tab.0.left" timestamp="1612123735749">
-      <screen x="0" y="0" width="1366" height="728" />
+    <state width="1419" height="220" key="GridCell.Tab.0.left" timestamp="1612905956109">
+      <screen x="1366" y="0" width="1440" height="860" />
     </state>
     <state width="1345" height="164" key="GridCell.Tab.0.left/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1612123735749" />
+    <state width="1419" height="220" key="GridCell.Tab.0.left/0.0.1366.728/1366.0.1440.860@1366.0.1440.860" timestamp="1612905956109" />
     <state width="1345" height="163" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1610750106107" />
-    <state width="1345" height="164" key="GridCell.Tab.0.right" timestamp="1612123735749">
-      <screen x="0" y="0" width="1366" height="728" />
+    <state width="1419" height="220" key="GridCell.Tab.0.right" timestamp="1612905956109">
+      <screen x="1366" y="0" width="1440" height="860" />
     </state>
     <state width="1345" height="164" key="GridCell.Tab.0.right/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1612123735749" />
+    <state width="1419" height="220" key="GridCell.Tab.0.right/0.0.1366.728/1366.0.1440.860@1366.0.1440.860" timestamp="1612905956109" />
     <state width="1345" height="163" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1610750106108" />
     <state width="1345" height="164" key="GridCell.Tab.1.bottom" timestamp="1612123735750">
       <screen x="0" y="0" width="1366" height="728" />
@@ -144,10 +149,11 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="184" y="9" key="SettingsEditor/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610139630978" />
-    <state x="390" y="97" width="823" height="596" key="find.popup" timestamp="1611093122576">
-      <screen x="0" y="0" width="1366" height="728" />
+    <state x="1777" y="0" width="868" height="860" key="find.popup" timestamp="1612901540632">
+      <screen x="1366" y="0" width="1440" height="860" />
     </state>
     <state x="390" y="97" width="823" height="596" key="find.popup/0.0.1366.728/1366.0.1440.860@0.0.1366.728" timestamp="1610223622591" />
+    <state x="1777" y="0" width="868" height="860" key="find.popup/0.0.1366.728/1366.0.1440.860@1366.0.1440.860" timestamp="1612901540632" />
     <state x="390" y="97" width="823" height="596" key="find.popup/0.0.1366.728@0.0.1366.728" timestamp="1611093122576" />
   </component>
   <component name="XDebuggerManager">
@@ -165,38 +171,28 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bot.py</url>
-          <line>467</line>
+          <line>519</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bot.py</url>
-          <line>482</line>
+          <line>534</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bot.py</url>
-          <line>471</line>
+          <line>523</line>
           <option name="timeStamp" value="11" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bot.py</url>
-          <line>473</line>
+          <line>525</line>
           <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bot.py</url>
-          <line>286</line>
+          <line>359</line>
           <option name="timeStamp" value="13" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bot.py</url>
-          <line>298</line>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bot.py</url>
-          <line>302</line>
-          <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/main.py</url>

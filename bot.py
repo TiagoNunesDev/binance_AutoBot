@@ -18,6 +18,7 @@ class Bot:
 
     def __init__(self,requestClient, coin, minimalcoinbuy , minimalprofit, leverage, minimalMove):
 
+        self.nmbOpenOrders = 0
         # --- Initial variables  -----
         self.client = requestClient
         self.coin = coin
@@ -273,6 +274,78 @@ class Bot:
             time.sleep(1)
 
 
+        # This function provides utility functions to work with Strings
+        # 1. reverse(s): returns the reverse of the input string
+        # 2. print(s): prints the string representation of the input object
+    def get_open_orders(self):
+        try:
+            sys.stdout = open(os.devnull, 'w')
+            data = self.client.get_open_orders(symbol=self.coin)
+
+            sys.stdout = sys.__stdout__
+        except Exception as e:
+            sys.stdout = sys.__stdout__
+            print(e)
+        else:
+            if(self.positionSize != 0):
+                self.nmbOpenOrders = 0
+                for idx, row in enumerate(data):
+                        members = [attr for attr in dir(row) if not callable(attr) and not attr.startswith("__")]
+                        for member_def in members:
+                            self.nmbOpenOrders = idx + 1
+
+                            # val_str = str(getattr(row, member_def))
+                            # if member_def == 'availableBalance':
+                            #     self.available = float(val_str)
+                            # if member_def == 'balance':
+                            #     self.balance = float(val_str)
+            print(self.nmbOpenOrders)
+
+    # This function provides utility functions to work with Strings
+    # 1. reverse(s): returns the reverse of the input string
+    # 2. print(s): prints the string representation of the input object
+
+
+    def set_sell_profit_and_stop_loss(self,entryPrice,quantity):
+
+        stprice = Decimal(entryPrice * (1.0 - (100 / (self.leverage * 100))))
+        stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
+        # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
+
+        print("INFO: Profit:", quantity, stprice)
+        self.set_sell_order_profit(quantity, stprice)
+
+        # ---------- Set take loss -------------
+        time.sleep(2)
+        stprice = Decimal(entryPrice * 1.05)
+        stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
+        # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
+
+        print("INFO: Loss:", quantity, stprice)
+        self.set_sell_order_take_loss(quantity, stprice)
+
+        # This function provides utility functions to work with Strings
+        # 1. reverse(s): returns the reverse of the input string
+        # 2. print(s): prints the string representation of the input object
+
+    def set_buy_profit_and_stop_loss(self, entryPrice, quantity):
+
+        stprice = Decimal(entryPrice * (1.0 + (100 / (self.leverage * 100))))
+        stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
+        # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
+
+        print("INFO: Profit:", quantity, stprice)
+        self.set_buy_order_profit(quantity, stprice)
+
+        # ---------- Set take loss -------------
+        time.sleep(2)
+        stprice = Decimal(entryPrice * 0.95)
+        stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
+        # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
+
+        print("INFO: Loss:", quantity, stprice)
+        self.set_buy_order_take_loss(quantity, stprice)
+
     # This function provides utility functions to work with Strings
     # 1. reverse(s): returns the reverse of the input string
     # 2. print(s): prints the string representation of the input object
@@ -290,22 +363,7 @@ class Bot:
 
                 time.sleep(1)
 
-
-                stprice = Decimal(entryPrice * (1.0 - (100/(self.leverage * 100))))
-                stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
-                # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
-
-                print("INFO: Profit:", quantity, stprice)
-                self.set_sell_order_profit(quantity, stprice)
-
-                # ---------- Set take loss -------------
-                time.sleep(2)
-                stprice = Decimal(entryPrice * 1.05)
-                stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
-                # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
-
-                print("INFO: Loss:", quantity, stprice)
-                self.set_sell_order_take_loss(quantity, stprice)
+                self.set_sell_profit_and_stop_loss(entryPrice,quantity)
 
             else:
                 # self.post_single_order(type, quantity)
@@ -319,23 +377,9 @@ class Bot:
                 entryPrice = self.get_position_entry_price()
 
                 time.sleep(1)
+                self.set_buy_profit_and_stop_loss(entryPrice, quantity)
 
 
-                stprice = Decimal(entryPrice * (1.0 + (100/(self.leverage * 100))))
-                stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
-                # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
-
-                print("INFO: Profit:", quantity, stprice)
-                self.set_buy_order_profit(quantity,stprice)
-
-                # ---------- Set take loss -------------
-                time.sleep(2)
-                stprice = Decimal(entryPrice * 0.95)
-                stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
-                # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
-
-                print("INFO: Loss:", quantity, stprice)
-                self.set_buy_order_take_loss(quantity,stprice)
 
         except ValueError:
             print(ValueError)
@@ -399,6 +443,14 @@ class Bot:
 
             # ------ Get the order price -----------
             self.get_position_entry_price()
+
+            if self.nmbOpenOrders != 2:
+                self.cancel_all_orders()
+                time.sleep(1)
+                if self.tradeState == 1:
+                    self.set_buy_profit_and_stop_loss(self.buyPrice, self.positionSize)
+                else:
+                    self.set_sell_profit_and_stop_loss(self.buyPrice, self.positionSize)
 
             # ---------- Continue with the current opened position  -------------
             if self.buyStatus == 1:
