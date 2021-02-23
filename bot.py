@@ -314,7 +314,7 @@ class Bot:
 
         # ---------- Set take loss -------------
         time.sleep(2)
-        stprice = Decimal(entryPrice * 1.10)
+        stprice = Decimal(entryPrice * 1.15)
         stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
         # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
 
@@ -336,7 +336,7 @@ class Bot:
 
         # ---------- Set take loss -------------
         time.sleep(2)
-        stprice = Decimal(entryPrice * 0.9)
+        stprice = Decimal(entryPrice * 0.85)
         stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
         # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
 
