@@ -31,7 +31,9 @@ class Bot:
 
         self.buyPrice = 0
         self.buyStatus = 0
-        self.tradeState = 0
+        self.tradeState = 1
+
+        self.lastTradeState = 1
 
         self.aux = 0
         # Coin for trading variables
@@ -312,7 +314,7 @@ class Bot:
 
         # ---------- Set take loss -------------
         time.sleep(2)
-        stprice = Decimal(entryPrice * 1.07)
+        stprice = Decimal(entryPrice * 1.10)
         stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
         # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
 
@@ -334,7 +336,7 @@ class Bot:
 
         # ---------- Set take loss -------------
         time.sleep(2)
-        stprice = Decimal(entryPrice * 0.93)
+        stprice = Decimal(entryPrice * 0.9)
         stprice = Decimal(stprice.quantize(Decimal(str(entryPrice)), rounding=ROUND_HALF_UP))
         # stprice = Decimal(stprice.quantize(Decimal(str(self.minimalMove)), rounding=ROUND_HALF_UP))
 
@@ -527,15 +529,32 @@ class Bot:
                 # self.sellIncrement = 0
 
                 # try to place order
-                if self.post_order(1, self.minimalBuy):
 
-                    self.positionSize = self.minimalBuy
-                    self.buyStatus = 1
+                # check last order
 
-                    self.buyPrice = self.get_position_entry_price()
-                    self.tradeState = 1
+                if self.tradeState == 1 :
+                    if self.post_order(1, self.minimalBuy):
+
+                        self.positionSize = self.minimalBuy
+                        self.buyStatus = 1
+
+                        self.buyPrice = self.get_position_entry_price()
+
+                        self.tradeState = 1
+                    else:
+                        self.buyStatus = 0
                 else:
-                    self.buyStatus = 0
+                    if self.post_order(0, self.minimalBuy):
+
+                        self.positionSize = self.minimalBuy
+                        self.buyStatus = 1
+
+                        self.buyPrice = self.get_position_entry_price()
+
+                        self.tradeState = 0
+                    else:
+                        self.buyStatus = 0
+
 
                 print("---------------------------------------------")
                 print("ORDER SELL :", self.coin)
