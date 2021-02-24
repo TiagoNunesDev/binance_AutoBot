@@ -463,7 +463,7 @@ class Bot:
 
                 if self.price >= (self.buyPrice * (1.0 + (100 / (self.leverage * 100)))) and self.tradeState == 0:
 
-                    self.positionSize = ((((self.price / self.buyPrice) - 1.04)*self.leverage) + 1.0) * abs(self.positionSize)
+                    self.positionSize = ((((self.price / self.buyPrice) - 1.025)*self.leverage) + 1.0) * abs(self.positionSize)
 
 
 
@@ -486,7 +486,7 @@ class Bot:
 
                 elif self.price <= (self.buyPrice * (1.0 - (100 / (self.leverage * 100)))) and self.tradeState == 1:
 
-                    self.positionSize = (((0.96 - (self.price / self.buyPrice)) * self.leverage)+1.0) * abs(self.positionSize)
+                    self.positionSize = (((0.975 - (self.price / self.buyPrice)) * self.leverage)+1.0) * abs(self.positionSize)
 
                     # self.get_balance()
                     calculation = (2 * abs(self.positionSize)) + abs(self.positionSize)
