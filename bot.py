@@ -14,19 +14,25 @@ import sys, os
 
 
 
-class Bot:
+class BinanceApi:
 
-    def __init__(self,requestClient, coin, minimalcoinbuy , minimalprofit, leverage, minimalMove):
+    def __init__(self,requestClient):
 
         self.nmbOpenOrders = 0
         # --- Initial variables  -----
         self.client = requestClient
-        self.coin = coin
-        self.minimalCoinBuy = minimalcoinbuy
-        self.minimalProfit  = minimalprofit
-        self.minimalMove = minimalMove
+        # self.coin = coin
+        # self.minimalCoinBuy = minimalcoinbuy
+        # self.minimalProfit = minimalprofit
+        # self.minimalMove = minimalMove
+        # self.minimalBuy = 0
+        # self.leverage = leverage
+        self.coin = 0
+        self.minimalCoinBuy = 0
+        self.minimalProfit  = 0
+        self.minimalMove = 0
         self.minimalBuy = 0
-        self.leverage = leverage
+        self.leverage = 0
         self.sellIncrement = 0
 
         self.buyPrice = 0
@@ -194,9 +200,6 @@ class Bot:
         else:
             time.sleep(2)
 
-    # This function provides utility functions to work with Strings
-    # 1. reverse(s): returns the reverse of the input string
-    # 2. print(s): prints the string representation of the input object
     def set_sell_order_take_loss(self,quantity,stprice):
         try:
             sys.stdout = open(os.devnull, 'w')
@@ -210,9 +213,6 @@ class Bot:
         else:
             time.sleep(2)
 
-    # This function provides utility functions to work with Strings
-    # 1. reverse(s): returns the reverse of the input string
-    # 2. print(s): prints the string representation of the input object
     def post_buy_order(self, quantity):
         try:
             sys.stdout = open(os.devnull, 'w')
@@ -225,10 +225,6 @@ class Bot:
         else:
             time.sleep(2)
 
-
-    # This function provides utility functions to work with Strings
-    # 1. reverse(s): returns the reverse of the input string
-    # 2. print(s): prints the string representation of the input object
     def set_buy_order_profit(self,quantity,stprice):
         try:
             sys.stdout = open(os.devnull, 'w')
@@ -242,10 +238,6 @@ class Bot:
         else:
             time.sleep(2)
 
-
-    # This function provides utility functions to work with Strings
-    # 1. reverse(s): returns the reverse of the input string
-    # 2. print(s): prints the string representation of the input object
     def set_buy_order_take_loss(self,quantity,stprice):
         try:
             sys.stdout = open(os.devnull, 'w')
@@ -279,6 +271,7 @@ class Bot:
         # This function provides utility functions to work with Strings
         # 1. reverse(s): returns the reverse of the input string
         # 2. print(s): prints the string representation of the input object
+
     def get_open_orders(self):
         try:
             sys.stdout = open(os.devnull, 'w')
@@ -295,13 +288,6 @@ class Bot:
                         members = [attr for attr in dir(row) if not callable(attr) and not attr.startswith("__")]
                         for member_def in members:
                             self.nmbOpenOrders = idx + 1
-
-
-
-    # This function provides utility functions to work with Strings
-    # 1. reverse(s): returns the reverse of the input string
-    # 2. print(s): prints the string representation of the input object
-
 
     def set_sell_profit_and_stop_loss(self,entryPrice,quantity):
 
@@ -343,10 +329,6 @@ class Bot:
         print("INFO: Loss:", quantity, stprice)
         self.set_buy_order_take_loss(quantity, stprice)
 
-    # This function provides utility functions to work with Strings
-    # 1. reverse(s): returns the reverse of the input string
-    # 2. print(s): prints the string representation of the input object
-
     def post_order(self,type,quantity):
         try:
             if type == 0:
@@ -385,10 +367,6 @@ class Bot:
         else:
             return True
 
-
-    # This function provides utility functions to work with Strings
-    # 1. reverse(s): returns the reverse of the input string
-    # 2. print(s): prints the string representation of the input object
     def get_price(self):
 
         try:
@@ -412,9 +390,6 @@ class Bot:
                             self.date = datetime.fromtimestamp((self.timestamp / 1000))
             return True
 
-    # This function provides utility functions to work with Strings
-    # 1. reverse(s): returns the reverse of the input string
-    # 2. print(s): prints the string representation of the input object
     def get_servertime(self):
         result = 0
         try:
@@ -427,13 +402,9 @@ class Bot:
         else:
             return result
 
-    # This function provides utility functions to work with Strings
-    # 1. reverse(s): returns the reverse of the input string
-    # 2. print(s): prints the string representation of the input object
     def process_Price(self):
 
         try:
-
 
             # ------ Get the current coin price -----------
             self.get_price()
