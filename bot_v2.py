@@ -67,7 +67,7 @@ class Strategy:
                     #calculate again de order size
                     # self.binanceMinOrder =
                     self.orderSize = Decimal(self.desireProfit) * self.leverage / Decimal(price)
-                    self.orderSize = Decimal(self.orderSize.quantize(Decimal(self.minTradeAmount), rounding=ROUND_HALF_UP))
+                    self.orderSize = Decimal(self.orderSize.quantize(Decimal(str(0)), rounding=ROUND_HALF_UP))
 
                     self.orderPrice = float(price)
                     self.profitPrice = (1.0 + self.percentageAux) * self.orderPrice
@@ -117,7 +117,7 @@ class Strategy:
                     # calculate again de order size
                     # self.binanceMinOrder =
                     self.orderSize = Decimal(self.desireProfit) * self.leverage / Decimal(price)
-                    self.orderSize = Decimal(self.orderSize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
+                    self.orderSize = Decimal(self.orderSize.quantize(Decimal(str(0)), rounding=ROUND_HALF_UP))
 
                     self.orderPrice = float(price)
                     self.profitPrice = (1.0 - self.percentageAux) * self.orderPrice
