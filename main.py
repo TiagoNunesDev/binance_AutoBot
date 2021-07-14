@@ -12,7 +12,6 @@ from flask_cors import CORS
 from multiprocessing import Process, Value
 import math
 import time
-import pandas as df
 import sys, os
 import logging
 import json
