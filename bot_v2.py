@@ -244,7 +244,7 @@ class Strategy:
                     self.percentageAux = self.percentage
                     #calculate the ordersize
                     self.desireProfit = 0.1 * self.cash
-                    self.investUSDT = self.desireProfit / self.percentageAux
+                    self.investUSDT = self.desireProfit * self.percentageAux
 
                     #calculate binance min quantity
                     self.binanceMinOrder = 5.0 / float(price)
@@ -288,7 +288,7 @@ class Strategy:
 
                     # calculate the ordersize
                     self.desireProfit = 0.1 * self.cash
-                    self.investUSDT = self.desireProfit / self.percentageAux
+                    self.investUSDT = self.desireProfit * self.percentageAux
 
                     # calculate binance min quantity
                     self.binanceMinOrder = 5.0 / float(price)
@@ -304,11 +304,11 @@ class Strategy:
                     # calculate again de order size
                     # self.binanceMinOrder =
                     self.orderSize = Decimal(self.investUSDT) * self.leverage / Decimal(price)
-                    self.orderSize = Decimal(self.orderSize.quantize(Decimal(self.minTradeAmount), rounding=ROUND_HALF_UP))
+                    self.orderSize = Decimal(self.orderSize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
 
-                    self.orderPrice = float(price)
-                    self.profitPrice = (1.0 - self.percentageAux) * self.orderPrice
-                    self.profitPrice = Decimal(self.profitPrice)
+                    self.orderPrice = float(price) #OK
+                    self.profitPrice = (1.0 - self.percentageAux) * self.orderPrice #OK
+                    self.profitPrice = Decimal(self.profitPrice) #OK
                     self.profitPrice = Decimal(self.profitPrice.quantize(Decimal(str(self.minPriceMove)), rounding=ROUND_HALF_UP))
 
                     self.lossPrice = (1.0 + self.percentageAux) * self.orderPrice

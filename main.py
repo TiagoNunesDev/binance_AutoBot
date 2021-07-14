@@ -1,5 +1,3 @@
-from lib2to3.btm_utils import syms
-from turtledemo.forest import start
 
 from binanceApi import binanceLib
 from binance_f import RequestClient
@@ -58,7 +56,7 @@ else:
     print("INFO: Connected to client")
 
 api = binanceLib(client = request_client)
-bot = Strategy(name='BTCUSDT', percentage=0.005 , balance=8000,minTradeAmount=0.001, minPriceMove=0.01,binanceApi = api)
+bot = Strategy(name='BTCUSDT', percentage=0.005 , balance=150000,minTradeAmount=0.001, minPriceMove=0.01,binanceApi = api)
 
 # coin = 'BTCUSDT'
 # minimalQtd = 0.001
