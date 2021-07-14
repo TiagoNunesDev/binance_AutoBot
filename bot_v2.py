@@ -57,7 +57,7 @@ class Strategy:
                     self.binanceMinOrder = 5.0 / float(price)
 
                     # calculate the leverage
-                    self.leverage = (self.binanceMinOrder * float(price)) / self.investUSDT
+                    self.leverage = (self.binanceMinOrder * float(price)) / self.desireProfit
                     if self.leverage < 1.0:
                         self.leverage = 1.0
 
@@ -107,7 +107,7 @@ class Strategy:
                     self.binanceMinOrder = 5.0 / float(price)
 
                     # calculate the leverage
-                    self.leverage = (self.binanceMinOrder * float(price)) / self.investUSDT
+                    self.leverage = (self.binanceMinOrder * float(price)) / self.desireProfit
                     if self.leverage < 1.0:
                         self.leverage = 1.0
 
