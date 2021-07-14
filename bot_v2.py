@@ -244,8 +244,8 @@ class Strategy:
                     self.percentageAux = self.percentage
                     #calculate the ordersize
                     self.desireProfit = 0.1 * self.cash
-                    self.investUSDT = self.desireProfit * self.percentageAux
-
+                  #  self.investUSDT = self.desireProfit * self.percentageAux
+                    self.investUSDT = self.desireProfit
                     #calculate binance min quantity
                     self.binanceMinOrder = 5.0 / float(price)
 
@@ -288,7 +288,8 @@ class Strategy:
 
                     # calculate the ordersize
                     self.desireProfit = 0.1 * self.cash
-                    self.investUSDT = self.desireProfit * self.percentageAux
+                    # self.investUSDT = self.desireProfit * self.percentageAux
+                    self.investUSDT = self.desireProfit
 
                     # calculate binance min quantity
                     self.binanceMinOrder = 5.0 / float(price)
