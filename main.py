@@ -53,6 +53,7 @@ api = binanceLib(client = request_client)
 
 balance = api.get_usdt_balance()
 balance = balance * 0.035
+print(balance)
 bot = Strategy(name=coin, percentage=0.005 , balance=balance,minTradeAmount=minimalQtd, minPriceMove=minimalMove,binanceApi = api)
 
 
