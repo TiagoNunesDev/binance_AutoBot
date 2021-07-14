@@ -26,11 +26,9 @@ key = os.environ.get('API_KEY')
 secret = os.environ.get('API_SECRET')
 coin = os.environ.get('COIN')
 minimalQtd = os.environ.get('MINIMAL_COIN_BUY')
-minimalProfit = os.environ.get('MINIMAL_PROFIT_USD')
-leverage = os.environ.get('COIN_LEVERAGE')
+# minimalProfit = os.environ.get('MINIMAL_PROFIT_USD')
+# leverage = os.environ.get('COIN_LEVERAGE')
 minimalMove = os.environ.get('COIN_MIN_MOVE')
-
-coin = 'BTCUSDT'
 # status = BotStatus.SELL
 #
 # if status == BotStatus.BUY:
@@ -40,19 +38,22 @@ coin = 'BTCUSDT'
 
 g_api_key = '9ed2810f070aa3c9378af0a828cdc46c6a20a347f9c80004e37a26f5d373e3b5'
 g_secret_key = 'c2340bebf086e113b6e3bd52f5bd17ccb201649a8f2b82804dec531a7fb16b0f'
-1
+
 # --------------------------- Init Client -------------------------------------------
 try:
     # request_client = RequestClient(api_key=key, secret_key=secret, url='https://testnet.binancefuture.com/')
-    # request_client = RequestClient(api_key=key, secret_key=secret,  url='https://fapi.binance.com')
-    request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key, url='https://testnet.binancefuture.com/')
+    request_client = RequestClient(api_key=key, secret_key=secret,  url='https://fapi.binance.com')
+    # request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key, url='https://testnet.binancefuture.com/')
 except Exception as e:
     print("ERROR: Connecting to client")
 else:
     print("INFO: Connected to client")
 
 api = binanceLib(client = request_client)
-bot = Strategy(name=coin, percentage=0.005 , balance=150000,minTradeAmount=0.001, minPriceMove=0.01,binanceApi = api)
+
+balance = api.get_usdt_balance()
+balance = balance * 0.035
+bot = Strategy(name=coin, percentage=0.005 , balance=balance,minTradeAmount=minimalQtd, minPriceMove=minimalMove,binanceApi = api)
 
 
 # try:
