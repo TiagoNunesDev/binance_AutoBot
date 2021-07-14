@@ -30,6 +30,7 @@ minimalProfit = os.environ.get('MINIMAL_PROFIT_USD')
 leverage = os.environ.get('COIN_LEVERAGE')
 minimalMove = os.environ.get('COIN_MIN_MOVE')
 
+coin = 'BTCUSDT'
 # status = BotStatus.SELL
 #
 # if status == BotStatus.BUY:
@@ -39,11 +40,7 @@ minimalMove = os.environ.get('COIN_MIN_MOVE')
 
 g_api_key = '9ed2810f070aa3c9378af0a828cdc46c6a20a347f9c80004e37a26f5d373e3b5'
 g_secret_key = 'c2340bebf086e113b6e3bd52f5bd17ccb201649a8f2b82804dec531a7fb16b0f'
-# coin = 'BTCUSDT'
-# minimalQtd = 0.001
-# minimalProfit = 1.0
-# leverage = 100
-# minimalMove = 0.001
+1
 # --------------------------- Init Client -------------------------------------------
 try:
     # request_client = RequestClient(api_key=key, secret_key=secret, url='https://testnet.binancefuture.com/')
@@ -55,15 +52,7 @@ else:
     print("INFO: Connected to client")
 
 api = binanceLib(client = request_client)
-bot = Strategy(name='BTCUSDT', percentage=0.005 , balance=150000,minTradeAmount=0.001, minPriceMove=0.01,binanceApi = api)
-
-# coin = 'BTCUSDT'
-# minimalQtd = 0.001
-# minimalProfit = 0.5
-# leverage = 50
-
-# backtest = Bot(request_client, coin, float(minimalQtd), float(minimalProfit), float(leverage), float(minimalMove))
-
+bot = Strategy(name=coin, percentage=0.005 , balance=150000,minTradeAmount=0.001, minPriceMove=0.01,binanceApi = api)
 
 
 # try:
@@ -97,8 +86,6 @@ def get_data_to_backtest():
 def record_loop_v2():
     global api,bot
 
-    bot.status = BotStatus.NOTDEFINED
-
     lastTime = 0
     while (True):
         try:
@@ -111,8 +98,41 @@ def record_loop_v2():
                         lastTime = currentTime
 
                         # check if are open positions
-                        position = api.get_open_positions('BTCUSDT')
-                        price = api.get_price_min1('BTCUSDT')
+                        position = api.get_open_positions(bot.name)
+                        # if positio is equal to zero we need to init bot
+                        if position[0] == 0:
+                            # clear all open orders
+                            api.cancel_all_orders(bot.name)
+                            # init bot status
+                            if bot.status == BotStatus.PLACEORDERBUY:
+                                bot.status = BotStatus.PLACEORDERFIRSTBUY
+                            elif bot.status == BotStatus.PLACEORDERSELL:
+                                bot.status = BotStatus.PLACEORDERFIRSTSELL
+                            else:
+                                bot.status = BotStatus.NOTDEFINED
+
+                        else:
+                            #check all open orders
+                            orders = api.get_open_orders(bot.name)
+                            #check profit open positons
+                            if orders[0] == 0:
+                                api.cancel_all_orders(bot.name)
+                                # check if is a sell or buy position
+                                if position[0] > 0:
+                                    bot.status = BotStatus.ORDERBUYCONTROL
+                                    #buy position
+                                    profit = Decimal(position[1] * (1+0.005))
+                                    profit = Decimal(profit.quantize(Decimal(str(bot.minPriceMove)), rounding=ROUND_HALF_UP))
+                                    api.post_buy_order_profit(bot.name,position[0],profit)
+                                else:
+                                    bot.status = BotStatus.ORDERSELLCONTROL
+                                    #sell position
+                                    profit = Decimal(position[1] * (1-0.005))
+                                    profit = Decimal(profit.quantize(Decimal(str(bot.minPriceMove)), rounding=ROUND_HALF_UP))
+                                    api.post_sell_order_profit(bot.name, position[0] * (-1), profit)
+
+
+                        price = api.get_price_min1(bot.name)
                         # check if there is no open positions
                         bot.process_coin_price_V2(price = price)
 
@@ -128,53 +148,52 @@ def record_loop_v2():
                         #
                         # process_coin_price
 
-
         except Exception as e:
             print(e)
 
-def record_loop():
-    global request_client
-
-    backtest.init_strategy()
-
-    current = 0
-    while (True):
-        try:
-            dataNow = datetime.now().minute
-            # check the server connection
-            if dataNow != current:
-                if (dataNow % 5) == 0:
-                    result = backtest.get_servertime()
-
-                    if result != 0:
-                        current = dataNow
-
-                        backtest.positionSize = 0
-
-                        backtest.get_open_positions(backtest.coin)
-                        backtest.get_open_orders()
-
-                        if backtest.positionSize == 0:
-                            backtest.buyStatus = 0
-                        backtest.process_Price()
-                        print("INFO: Bot -> ON ")
-
-                    else:
-                        try:
-                            request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key,
-                                                       url='https://testnet.binancefuture.com/')
-                        except Exception as e:
-                            print(e)
-                            print("ERROR: restarting client")
-                        else:
-                            print("INFO: Cient restarted")
-
-        except Exception as e:
-            print(e)
-
-    # This function provides utility functions to work with Strings
-    # 1. reverse(s): returns the reverse of the input string
-    # 2. print(s): prints the string representation of the input object
+# def record_loop():
+#     global request_client
+#
+#     backtest.init_strategy()
+#
+#     current = 0
+#     while (True):
+#         try:
+#             dataNow = datetime.now().minute
+#             # check the server connection
+#             if dataNow != current:
+#                 if (dataNow % 5) == 0:
+#                     result = backtest.get_servertime()
+#
+#                     if result != 0:
+#                         current = dataNow
+#
+#                         backtest.positionSize = 0
+#
+#                         backtest.get_open_positions(backtest.coin)
+#                         backtest.get_open_orders()
+#
+#                         if backtest.positionSize == 0:
+#                             backtest.buyStatus = 0
+#                         backtest.process_Price()
+#                         print("INFO: Bot -> ON ")
+#
+#                     else:
+#                         try:
+#                             request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key,
+#                                                        url='https://testnet.binancefuture.com/')
+#                         except Exception as e:
+#                             print(e)
+#                             print("ERROR: restarting client")
+#                         else:
+#                             print("INFO: Cient restarted")
+#
+#         except Exception as e:
+#             print(e)
+#
+#     # This function provides utility functions to work with Strings
+#     # 1. reverse(s): returns the reverse of the input string
+#     # 2. print(s): prints the string representation of the input object
 
 
 
@@ -196,7 +215,7 @@ def main():
 
 if __name__ == '__main__':
 
-    binLib = binanceLib(client = request_client)
+    # binLib = binanceLib(client = request_client)
     # teste = 1.3
     # teste = Decimal(teste)
     #
@@ -207,8 +226,12 @@ if __name__ == '__main__':
   #   teste = request_client.get_balance_v2()
     # coin =
     # result = request_client.get_position()
-    position = binLib.get_open_positions('BTCUSDT')
-    price = api.get_price_min1(cryptoCoin='BTCUSDT')
+    # position = binLib.get_open_positions('BTCUSDT')
+    # price = api.get_price_min1(cryptoCoin='BTCUSDT')
+
+
+    # orders = api.get_open_orders(bot.name)
+    # print(orders)
     # res = binLib.set_leverage("ALPHAUSDT",15)
     #
     # if res:
@@ -216,7 +239,7 @@ if __name__ == '__main__':
     # else:
     #     print("NOK")
     # result = binLib.get_usdt_balance()
-    print(price)
+    # print(orders)
     # for()
     #
     # strategy = Strategy(name='ALPHAUSDT',data=data,balance=1.0, percentage=0.005,minTradeAmount=1.0,minPriceMove=0.001)

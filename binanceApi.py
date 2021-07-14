@@ -178,3 +178,34 @@ class binanceLib:
             #                 self.timestamp = int(val_str)
             #                 self.date = datetime.fromtimestamp((self.timestamp / 1000))
             # return True
+
+    def get_open_orders(self,cryptoCoin):
+        take_profit = 0
+        take_loss = 0
+
+        try:
+            sys.stdout = open(os.devnull, 'w')
+            data = self.client.get_open_orders(symbol=cryptoCoin)
+            sys.stdout = sys.__stdout__
+        except Exception as e:
+            sys.stdout = sys.__stdout__
+            print(e)
+        else:
+            for orders in data:
+                if orders.type == 'TAKE_PROFIT_MARKET':
+                    take_profit += take_profit + 1
+                if orders.type == 'STOP_MARKET':
+                    take_loss += take_loss + 1
+
+            return take_profit, take_loss
+
+    def cancel_all_orders(self,cryptoCoin):
+        try:
+            sys.stdout = open(os.devnull, 'w')
+            self.client.cancel_all_orders(symbol=cryptoCoin)
+            sys.stdout = sys.__stdout__
+        except Exception as e:
+            sys.stdout = sys.__stdout__
+            print(e)
+        else:
+            time.sleep(1)
