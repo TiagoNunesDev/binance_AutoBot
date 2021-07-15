@@ -375,7 +375,8 @@ class Strategy:
                     self.percentageAux = (float(price)/self.orderPrice ) - 1.0
                     self.percentageAux = self.percentageAux * 2.0
                     self.orderPrice = float(price)
-                    # self.orderSize =  self.orderSize * Decimal(2.0)
+
+                    self.orderSize =  self.orderSize * Decimal(2.0)
 
                     self.lossPrice = 0.95 * self.orderPrice
                     self.status = BotStatus.ORDERBUYCONTROL
@@ -400,7 +401,7 @@ class Strategy:
                     self.percentageAux = self.percentageAux * 2.0
                     self.orderPrice = float(price)
 
-                    # self.orderSize = self.orderSize * Decimal(2.0)
+                    self.orderSize = self.orderSize * Decimal(2.0)
 
                     self.lossPrice = 1.05 * self.orderPrice
                     self.status = BotStatus.ORDERSELLCONTROL
