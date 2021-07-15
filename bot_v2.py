@@ -377,6 +377,8 @@ class Strategy:
                     self.orderPrice = float(price)
 
                     self.orderSize =  self.orderSize * Decimal(2.0)
+                    if self.orderSize < 0:
+                        self.orderSize = self.orderSize * Decimal(-1.0)
 
                     self.lossPrice = 0.95 * self.orderPrice
                     self.status = BotStatus.ORDERBUYCONTROL
@@ -402,6 +404,9 @@ class Strategy:
                     self.orderPrice = float(price)
 
                     self.orderSize = self.orderSize * Decimal(2.0)
+
+                    if self.orderSize > 0:
+                        self.orderSize = self.orderSize * Decimal(-1.0)
 
                     self.lossPrice = 1.05 * self.orderPrice
                     self.status = BotStatus.ORDERSELLCONTROL
