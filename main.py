@@ -29,6 +29,11 @@ minimalQtd = os.environ.get('MINIMAL_COIN_BUY')
 # minimalProfit = os.environ.get('MINIMAL_PROFIT_USD')
 # leverage = os.environ.get('COIN_LEVERAGE')
 minimalMove = os.environ.get('COIN_MIN_MOVE')
+
+
+# minimalQtd = 0.01
+# minimalMove = 0.001
+# coin = 'ATOMUSDT'
 # status = BotStatus.SELL
 #
 # if status == BotStatus.BUY:
@@ -104,6 +109,10 @@ def record_loop_v2():
                         position = api.get_open_positions(bot.name)
                         # if positio is equal to zero we need to init bot
                         if position[0] == 0:
+                            balance = api.get_usdt_balance()
+                            balance = balance * 0.035
+
+                            bot.cash = balance
                             # clear all open orders
                             api.cancel_all_orders(bot.name)
                             # init bot status

@@ -251,11 +251,11 @@ class Strategy:
                     self.numberTries = 1
                     self.percentageAux = self.percentage
                     #calculate the ordersize
-                    self.desireProfit = 0.1 * self.cash
+                    self.desireProfit = self.cash
                   #  self.investUSDT = self.desireProfit * self.percentageAux
                     self.investUSDT = self.desireProfit
                     #calculate binance min quantity
-                    self.binanceMinOrder = 5.0 / float(price)
+                    self.binanceMinOrder = 6 / float(price)
 
                     # calculate the leverage
                     self.leverage = (self.binanceMinOrder * float(price)) / self.investUSDT
@@ -297,12 +297,12 @@ class Strategy:
                     self.percentageAux = self.percentage
 
                     # calculate the ordersize
-                    self.desireProfit = 0.1 * self.cash
+                    self.desireProfit = self.cash
                     # self.investUSDT = self.desireProfit * self.percentageAux
                     self.investUSDT = self.desireProfit
 
                     # calculate binance min quantity
-                    self.binanceMinOrder = 5.0 / float(price)
+                    self.binanceMinOrder = 6.0 / float(price)
 
                     # calculate the leverage
                     self.leverage = (self.binanceMinOrder * float(price)) / self.investUSDT
