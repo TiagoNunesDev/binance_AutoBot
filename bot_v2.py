@@ -373,12 +373,13 @@ class Strategy:
                     # self.numberTries += 1
                     self.numberTries +=1
                     self.percentageAux = (float(price)/self.orderPrice ) - 1.0
-                    self.percentageAux = self.percentageAux * 2.0
+                    # self.percentageAux = self.percentageAux * 2.0
+
                     self.orderPrice = float(price)
 
-                    self.orderSize =  self.orderSize * Decimal(2.0)
-                    if self.orderSize < 0:
-                        self.orderSize = self.orderSize * Decimal(-1.0)
+                    self.orderSize = self.orderSize +  self.orderSize * Decimal(2.0)
+                    # if self.orderSize < 0:
+                    #     self.orderSize = self.orderSize * Decimal(-1.0)
 
                     self.lossPrice = 0.95 * self.orderPrice
                     self.status = BotStatus.ORDERBUYCONTROL
@@ -400,13 +401,13 @@ class Strategy:
                     # self.numberTries += 1
                     self.numberTries += 1
                     self.percentageAux = 1.0 - (float(price)/self.orderPrice)
-                    self.percentageAux = self.percentageAux * 2.0
+                    # self.percentageAux = self.percentageAux * 2.0
                     self.orderPrice = float(price)
 
-                    self.orderSize = self.orderSize * Decimal(2.0)
+                    self.orderSize = self.orderSize + self.orderSize * Decimal(2.0)
 
-                    if self.orderSize > 0:
-                        self.orderSize = self.orderSize * Decimal(-1.0)
+                    # if self.orderSize > 0:
+                    #     self.orderSize = self.orderSize * Decimal(-1.0)
 
                     self.lossPrice = 1.05 * self.orderPrice
                     self.status = BotStatus.ORDERSELLCONTROL
@@ -415,8 +416,8 @@ class Strategy:
                     self.profitPrice = Decimal(self.profitPrice)
                     self.profitPrice = Decimal(self.profitPrice.quantize(Decimal(str(self.minPriceMove)), rounding=ROUND_HALF_UP))
 
-                    self.binanceApi.post_buy_order(self.name, self.orderSize)
-                    self.binanceApi.post_buy_order_profit(self.name, self.orderSize, self.profitPrice)
+                    self.binanceApi.post_sell_order(self.name, self.orderSize)
+                    self.binanceApi.post_sell_order_profit(self.name, self.orderSize, self.profitPrice)
 
                     print("-- Sell at", self.orderPrice)
                     print("-- Order Size:", self.orderSize)
