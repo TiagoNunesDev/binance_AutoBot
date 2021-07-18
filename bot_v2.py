@@ -385,6 +385,8 @@ class Strategy:
                         self.leverage = Decimal(self.leverage)
                         self.orderSize = Decimal(self.investUSDT) * self.leverage / Decimal(price)
                         self.orderSize = Decimal(self.orderSize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
+                    else:
+                        self.orderSize = self.orderSize * Decimal(2.0)
 
                     # set leverage
                     self.leverage = Decimal(self.leverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
@@ -428,6 +430,8 @@ class Strategy:
                         self.leverage = Decimal(self.leverage)
                         self.orderSize = Decimal(self.investUSDT) * self.leverage / Decimal(price)
                         self.orderSize = Decimal(self.orderSize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
+                    else:
+                        self.orderSize = self.orderSize * Decimal(2.0)
 
                     # set leverage
                     self.leverage = Decimal(self.leverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
