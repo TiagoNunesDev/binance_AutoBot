@@ -23,6 +23,7 @@ class Strategy:
         self.minTradeAmount = kwargs["minTradeAmount"]
         self.minPriceMove = kwargs["minPriceMove"]
         self.binanceApi = kwargs["binanceApi"]
+        self.maxLeverage = kwargs["maxLev"]
         # non editable varibles
         # self.cash = None
         self.percentageAux = None
@@ -310,9 +311,7 @@ class Strategy:
                         self.leverage = 1.0
 
                     self.leverage = Decimal(self.leverage)
-                    self.leverage = Decimal(self.leverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
 
-                    self.binanceApi.set_leverage(self.name,self.leverage)
                     # calculate again de order size
                     # self.binanceMinOrder =
                     self.orderSize = Decimal(self.investUSDT) * self.leverage / Decimal(price)
@@ -377,7 +376,21 @@ class Strategy:
 
                     self.orderPrice = float(price)
 
-                    self.orderSize = self.orderSize +  self.orderSize * Decimal(2.0)
+                    if self.leverage > self.maxLeverage:
+                        self.investUSDT = self.investUSDT * 2.0
+                        self.leverage = (self.binanceMinOrder * float(price)) / self.investUSDT
+                        if self.leverage < 1.0:
+                            self.leverage = 1.0
+
+                        self.leverage = Decimal(self.leverage)
+                        self.orderSize = Decimal(self.investUSDT) * self.leverage / Decimal(price)
+                        self.orderSize = Decimal(self.orderSize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
+
+                    # set leverage
+                    self.leverage = Decimal(self.leverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
+                    self.binanceApi.set_leverage(self.name, self.leverage)
+
+                    # self.orderSize = self.orderSize +  self.orderSize * Decimal(2.0)
                     # if self.orderSize < 0:
                     #     self.orderSize = self.orderSize * Decimal(-1.0)
 
@@ -404,7 +417,21 @@ class Strategy:
                     # self.percentageAux = self.percentageAux * 2.0
                     self.orderPrice = float(price)
 
-                    self.orderSize = self.orderSize + self.orderSize * Decimal(2.0)
+                    self.leverage = self.leverage * Decimal(2.0)
+
+                    if self.leverage > self.maxLeverage:
+                        self.investUSDT = self.investUSDT * 2.0
+                        self.leverage = (self.binanceMinOrder * float(price)) / self.investUSDT
+                        if self.leverage < 1.0:
+                            self.leverage = 1.0
+
+                        self.leverage = Decimal(self.leverage)
+                        self.orderSize = Decimal(self.investUSDT) * self.leverage / Decimal(price)
+                        self.orderSize = Decimal(self.orderSize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
+
+                    # set leverage
+                    self.leverage = Decimal(self.leverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
+                    self.binanceApi.set_leverage(self.name, self.leverage)
 
                     # if self.orderSize > 0:
                     #     self.orderSize = self.orderSize * Decimal(-1.0)

@@ -29,7 +29,7 @@ minimalQtd = os.environ.get('MINIMAL_COIN_BUY')
 # minimalProfit = os.environ.get('MINIMAL_PROFIT_USD')
 # leverage = os.environ.get('COIN_LEVERAGE')
 minimalMove = os.environ.get('COIN_MIN_MOVE')
-
+maxLeverage = os.environ.get('MAX_LEVERAGE')
 
 # minimalQtd = 0.01
 # minimalMove = 0.001
@@ -60,7 +60,7 @@ balance = api.get_usdt_balance()
 balance = balance * 0.035
 print("BALANCE:",balance)
 
-bot = Strategy(name=coin, percentage=0.005 , balance=balance,minTradeAmount=minimalQtd, minPriceMove=minimalMove,binanceApi = api)
+bot = Strategy(name=coin, percentage=0.005 , balance=balance,minTradeAmount=minimalQtd, minPriceMove=minimalMove,maxLev=maxLeverage,binanceApi = api)
 
 
 # try:
