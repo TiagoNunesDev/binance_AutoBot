@@ -47,7 +47,7 @@ class binanceLib:
         else:
             for dt in result:
                 if str(dt.symbol) == str(cryptoCoin):
-                    return dt.positionAmt,dt.entryPrice,dt.markPrice
+                    return dt.positionAmt,dt.entryPrice,dt.markPrice,dt.leverage
 
     def set_leverage(self,cryptoCoin,leverage):
         try:
@@ -59,6 +59,7 @@ class binanceLib:
             sys.stdout = sys.__stdout__
             print(e)
             return False
+
 
     def post_sell_order(self,cryptoCoin,quantity):
         try:
