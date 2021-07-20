@@ -156,6 +156,7 @@ class Strategy:
         print("A")
         self.leverage = Decimal(self.leverage)
         self.leverage = self.leverage * Decimal(2.0)
+        self.maxLeverage = Decimal(self.maxLeverage)
         
         if self.leverage > self.maxLeverage:
             self.investUSDT = self.investUSDT * 2.0
@@ -210,7 +211,8 @@ class Strategy:
 
         self.leverage = Decimal(self.leverage)
         self.leverage = self.leverage * Decimal(2.0)
-
+        self.maxLeverage = Decimal(self.maxLeverage)
+        
         if self.leverage > self.maxLeverage:
             self.investUSDT = self.investUSDT * 2.0
             self.leverage = (self.binanceMinOrder * Decimal(price)) / self.investUSDT
