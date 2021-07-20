@@ -154,6 +154,7 @@ class Strategy:
         # self.percentageAux = self.percentageAux * 2.0
         
         print("A")
+        self.leverage = Decimal(self.leverage)
         self.leverage = self.leverage * Decimal(2.0)
         
         if self.leverage > self.maxLeverage:
@@ -207,6 +208,7 @@ class Strategy:
         # self.percentageAux = self.percentageAux * 2.0
         self.orderPrice = float(price)
 
+        self.leverage = Decimal(self.leverage)
         self.leverage = self.leverage * Decimal(2.0)
 
         if self.leverage > self.maxLeverage:
