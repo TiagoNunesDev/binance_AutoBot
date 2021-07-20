@@ -152,8 +152,10 @@ class Strategy:
         self.numberTries += 1
         self.percentageAux = (float(price) / self.orderPrice) - 1.0
         # self.percentageAux = self.percentageAux * 2.0
-
-
+        
+        print("A")
+        self.leverage = self.leverage * Decimal(2.0)
+        
         if self.leverage > self.maxLeverage:
             self.investUSDT = self.investUSDT * 2.0
             self.leverage = (self.binanceMinOrder * Decimal(price)) / self.investUSDT
@@ -166,6 +168,7 @@ class Strategy:
         else:
             self.orderSize = self.orderSize * Decimal(2.0)
 
+         print("B")
         # set leverage
         self.leverage = Decimal(self.leverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
         self.binanceApi.set_leverage(self.name, self.leverage)
@@ -173,21 +176,24 @@ class Strategy:
         # self.orderSize = self.orderSize +  self.orderSize * Decimal(2.0)
         # if self.orderSize < 0:
         #     self.orderSize = self.orderSize * Decimal(-1.0)
-
+        print("C")
         self.lossPrice = 0.95 * self.orderPrice
         self.status = BotStatus.ORDERBUYCONTROL
-
+        
+        print("D")
         self.profitPrice = (1.0 + self.percentageAux) * self.orderPrice
         self.profitPrice = Decimal(self.profitPrice)
         self.profitPrice = Decimal(self.profitPrice.quantize(Decimal(str(self.minPriceMove)), rounding=ROUND_HALF_UP))
-
+        
+        print("E")
         self.binanceApi.post_buy_order(self.name, self.orderSize)
         self.binanceApi.post_buy_order_profit(self.name, self.orderSize, self.profitPrice)
 
         positions= self.binanceApi.get_open_positions(self.name)
-
-        self.orderPrice = positions[1]
-
+        
+        print("F")
+        self.orderPrice = Decimal(positions[1])
+        
         print("-- Buy at", self.orderPrice)
         print("-- Order Size:", self.orderSize)
         print("-- Buy at", self.orderPrice)
