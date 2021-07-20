@@ -168,7 +168,7 @@ class Strategy:
         else:
             self.orderSize = self.orderSize * Decimal(2.0)
 
-         print("B")
+        print("B")
         # set leverage
         self.leverage = Decimal(self.leverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
         self.binanceApi.set_leverage(self.name, self.leverage)
