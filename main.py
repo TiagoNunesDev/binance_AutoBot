@@ -34,6 +34,9 @@ maxLeverage = os.environ.get('MAX_LEVERAGE')
 # minimalQtd = 0.01
 # minimalMove = 0.001
 # coin = 'ATOMUSDT'
+#
+# maxLeverage = 75
+
 # status = BotStatus.SELL
 #
 # if status == BotStatus.BUY:
@@ -126,6 +129,10 @@ def record_loop_v2():
                         else:
                             #check all open orders
                             orders = api.get_open_orders(bot.name)
+
+                            #update orderprice
+                            bot.orderPrice = position[1]
+                            bot.leverage   = position[3]
                             #check profit open positons
                             if orders[0] == 0:
                                 api.cancel_all_orders(bot.name)
@@ -242,7 +249,7 @@ if __name__ == '__main__':
     # price = api.get_price_min1(cryptoCoin='BTCUSDT')
 
 
-    # orders = api.get_open_orders(bot.name)
+
     # print(orders)
     # res = binLib.set_leverage("ALPHAUSDT",15)
     #
