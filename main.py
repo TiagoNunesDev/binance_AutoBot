@@ -98,8 +98,8 @@ def record_loop_v2():
     global api,bot
 
     lastTime = 0
-    while (T  rue):
-        try1:
+    while (True):
+        try:
             currentTime = datetime.now().minute
             if currentTime != lastTime:
                 if (currentTime % 1) == 0:
