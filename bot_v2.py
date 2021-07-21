@@ -261,35 +261,12 @@ class Strategy:
                     self.place_order_first_sell(price)
 
                 if self.status == BotStatus.ORDERBUYCONTROL:
-                    if float(price) >= self.profitPrice:
-                        self.cash += self.desireProfit
-
-                        if self.numberTriesBigger < self.numberTries:
-                            self.numberTriesBigger = self.numberTries
-
-                        print("-- Nmb tries:",self.numberTries)
-                        print("-- Cash:", self.cash)
-                        print("-- Nmb trades:", self.numberTries)
-                        print("-- Nmb trades max:", self.numberTriesBigger)
-                        print("----------- Trade ended ------------")
-                        self.status = BotStatus.PLACEORDERFIRSTBUY
-                    elif float(price) <= (self.orderPrice * (1.0 - self.percentageAux)):
+                    if float(price) <= (self.orderPrice * (1.0 - self.percentageAux)):
                         self.status = BotStatus.PLACEORDERSELL
 
                 if self.status == BotStatus.ORDERSELLCONTROL:
-                    if float(price) <= self.profitPrice:
-                        self.cash += self.desireProfit
-
-                        if self.numberTriesBigger < self.numberTries:
-                            self.numberTriesBigger = self.numberTries
-
-                        print("-- Nmb tries:",self.numberTries)
-                        print("-- Cash:", self.cash)
-                        print("-- Nmb trades:", self.numberTries)
-                        print("-- Nmb trades max:", self.numberTriesBigger)
-                        print("----------- Trade ended ------------")
-                        self.status = BotStatus.PLACEORDERFIRSTSELL
-                    elif float(price) >= (self.orderPrice * (1.0 + self.percentageAux)):
+                    print(float(price),self.orderPrice,(self.orderPrice * (1.0 + self.percentageAux))
+                    if float(price) >= (self.orderPrice * (1.0 + self.percentageAux)):
                         self.status = BotStatus.PLACEORDERBUY
 
                 if self.status == BotStatus.PLACEORDERBUY:
