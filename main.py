@@ -100,13 +100,14 @@ def record_loop_v2():
     lastTime = 0
     while (True):
         try:
-            currentTime = datetime.now().minute
-            if currentTime != lastTime:
-                if (currentTime % 1) == 0:
+            # currentTime = datetime.now().minute
+            # if currentTime != lastTime:
+                # if (currentTime % 1) == 0:
+                    time.sleep(20)
                     # get server time to check if server is connected
                     serverTime =  api.get_server_time()
                     if serverTime != 0:
-                        lastTime = currentTime
+                        # lastTime = currentTime
 
                         # check if are open positions
                         position = api.get_open_positions(bot.name)
