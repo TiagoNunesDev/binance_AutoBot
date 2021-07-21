@@ -265,7 +265,7 @@ class Strategy:
                         self.status = BotStatus.PLACEORDERSELL
 
                 if self.status == BotStatus.ORDERSELLCONTROL:
-                    print(float(price),self.orderPrice,(self.orderPrice * (1.0 + self.percentageAux))
+                    print(float(price),self.orderPrice,(self.orderPrice * (1.0 + self.percentageAux)))
                     if float(price) >= (self.orderPrice * (1.0 + self.percentageAux)):
                         self.status = BotStatus.PLACEORDERBUY
 
