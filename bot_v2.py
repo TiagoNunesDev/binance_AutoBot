@@ -31,7 +31,7 @@ class Strategy:
         self.profitPrice = None
         self.lossPrice = None
         self.numberTries = None
-        self.status = None
+        self.status = BotStatus.NOTDEFINED
         self.lastOrderPrice = None
         self.desireProfit = None
         self.investUSDT = None

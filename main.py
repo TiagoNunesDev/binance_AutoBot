@@ -150,7 +150,12 @@ def record_loop_v2():
                                     profit = Decimal(position[1] * (1-0.005))
                                     profit = Decimal(profit.quantize(Decimal(str(bot.minPriceMove)), rounding=ROUND_HALF_UP))
                                     api.post_sell_order_profit(bot.name, position[0] * (-1), profit)
-
+                            else:
+                                if bot.status == BotStatus.NOTDEFINED:
+                                    if position[0] > 0:
+                                        bot.status = BotStatus.ORDERBUYCONTROL
+                                    else:
+                                        bot.status = BotStatus.ORDERSELLCONTROL
 
                         price = api.get_price_min1(bot.name)
                         # check if there is no open positions
