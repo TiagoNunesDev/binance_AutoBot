@@ -31,9 +31,9 @@ minimalQtd = os.environ.get('MINIMAL_COIN_BUY')
 minimalMove = os.environ.get('COIN_MIN_MOVE')
 maxLeverage = os.environ.get('MAX_LEVERAGE')
 
-# minimalQtd = 0.01
+# minimalQtd = 0.1
 # minimalMove = 0.001
-# coin = 'ATOMUSDT'
+# coin = 'XTZUSDT'
 #
 # maxLeverage = 75
 
@@ -103,7 +103,7 @@ def record_loop_v2():
             # currentTime = datetime.now().minute
             # if currentTime != lastTime:
                 # if (currentTime % 1) == 0:
-                    time.sleep(20)
+                    time.sleep(10)
                     # get server time to check if server is connected
                     serverTime =  api.get_server_time()
                     if serverTime != 0:
@@ -131,6 +131,8 @@ def record_loop_v2():
                             #check all open orders
                             orders = api.get_open_orders(bot.name)
 
+                            if bot.percentageAux ==0:
+                                bot.percentageAux = bot.percentage
                             #update orderprice
                             bot.orderPrice = position[1]
                             bot.leverage   = position[3]
@@ -175,51 +177,6 @@ def record_loop_v2():
 
         except Exception as e:
             print(e)
-
-# def record_loop():
-#     global request_client
-#
-#     backtest.init_strategy()
-#
-#     current = 0
-#     while (True):
-#         try:
-#             dataNow = datetime.now().minute
-#             # check the server connection
-#             if dataNow != current:
-#                 if (dataNow % 5) == 0:
-#                     result = backtest.get_servertime()
-#
-#                     if result != 0:
-#                         current = dataNow
-#
-#                         backtest.positionSize = 0
-#
-#                         backtest.get_open_positions(backtest.coin)
-#                         backtest.get_open_orders()
-#
-#                         if backtest.positionSize == 0:
-#                             backtest.buyStatus = 0
-#                         backtest.process_Price()
-#                         print("INFO: Bot -> ON ")
-#
-#                     else:
-#                         try:
-#                             request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key,
-#                                                        url='https://testnet.binancefuture.com/')
-#                         except Exception as e:
-#                             print(e)
-#                             print("ERROR: restarting client")
-#                         else:
-#                             print("INFO: Cient restarted")
-#
-#         except Exception as e:
-#             print(e)
-#
-#     # This function provides utility functions to work with Strings
-#     # 1. reverse(s): returns the reverse of the input string
-#     # 2. print(s): prints the string representation of the input object
-
 
 
 @app.route("/", methods=['GET'])

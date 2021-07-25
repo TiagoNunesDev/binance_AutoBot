@@ -26,75 +26,128 @@ class Strategy:
         self.maxLeverage = kwargs["maxLev"]
         # non editable varibles
         # self.cash = None
-        self.percentageAux = None
-        self.orderPrice = None
-        self.profitPrice = None
-        self.lossPrice = None
-        self.numberTries = None
+        self.percentageAux = 0
+        self.orderPrice = 0
+        self.profitPrice = 0
+        self.lossPrice = 0
+        self.numberTries = 0
         self.status = BotStatus.NOTDEFINED
-        self.lastOrderPrice = None
-        self.desireProfit = None
-        self.investUSDT = None
-        self.binanceMinQuantity = None
-        self.orderSize = None
-        self.leverage = None
-        self.numberTries = None
+        self.lastOrderPrice = 0
+        self.desireProfit = 0
+        self.investUSDT = 0
+        self.binanceMinQuantity = 0
+        self.orderSize = 0
+        self.leverage = 0
+        self.numberTries = 0
         self.numberTriesBigger = 0
 
+        self.minOrdersize = 0
+
+
     def place_order_first_sell(self,price):
-        self.numberTries = 1
-        self.percentageAux = self.percentage
 
-        # calculate the ordersize
-        self.desireProfit = self.cash
+        # new algorithm
+        self.percentageAux = 0.005
+        self.maxLeverage = Decimal(self.maxLeverage)
+        self.maxLeverage = Decimal(self.maxLeverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
 
-        # self.investUSDT = self.desireProfit * self.percentageAux
-        self.investUSDT = self.desireProfit
+        # change the leverage
+        result = self.binanceApi.set_leverage(self.name, self.maxLeverage)
+        # verify the command result
+        if result == False:
+            print("ERROR: Updating leverage")
+            return False
+        else:
+            print("DEBUG: Leverage Updated sucessfully")
 
-        # calculate binance min quantity
-        self.binanceMinOrder = 6.0 / float(price)
+        #calculate min investment
+        self.minOrdersize = 5.2 / float(price)
 
-        # calculate the leverage
-        self.leverage = (self.binanceMinOrder * float(price)) / self.investUSDT
-        if self.leverage < 1.0:
-            self.leverage = 1.0
+        #set a sell order
+        self.minOrdersize = Decimal(self.minOrdersize)
+        self.minOrdersize = Decimal(self.minOrdersize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
 
-        self.leverage = Decimal(self.leverage)
-        self.leverage = Decimal(self.leverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
+        result = self.binanceApi.post_sell_order(self.name, self.minOrdersize)
+        if result == False:
+            print("ERROR: Setting new order")
+            return False
+        else:
+            print("DEBUG: Add new order sucessfull")
 
-        self.binanceApi.set_leverage(self.name, self.leverage)
+        #get Order price
+        result = self.binanceApi.get_open_positions(self.name)
 
-        # calculate again de order size
-        self.orderSize = Decimal(self.investUSDT) * self.leverage / Decimal(price)
-        self.orderSize = Decimal(self.orderSize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
+        self.orderPrice = result[1]
 
-        # place sell order
-        if self.binanceApi.post_sell_order(self.name, self.orderSize):
+        #set profit area
+        # calculate new profit price
+        self.profitPrice = (1.0 - self.percentageAux) * self.orderPrice  # OK
+        self.profitPrice = Decimal(self.profitPrice)  # OK
+        self.profitPrice = Decimal(self.profitPrice.quantize(Decimal(str(self.minPriceMove)), rounding=ROUND_HALF_UP))
 
-            time.sleep(2)
-            # get open position
-            positions = self.binanceApi.get_open_positions(self.name)
-            self.orderPrice = positions[1]
+        result =  self.binanceApi.post_sell_order_profit(self.name, self.orderSize, self.profitPrice)
 
-            # calculate new profit price
-            self.profitPrice = (1.0 - self.percentageAux) * self.orderPrice  # OK
-            self.profitPrice = Decimal(self.profitPrice)  # OK
-            self.profitPrice = Decimal(self.profitPrice.quantize(Decimal(str(self.minPriceMove)), rounding=ROUND_HALF_UP))
-
-            self.lossPrice = (1.0 + self.percentageAux) * self.orderPrice
+        if result == False:
+            print("ERROR: Updating leverage")
+        else:
+            print("DEBUG: Place profit order sucessfull")
             self.status = BotStatus.ORDERSELLCONTROL
 
-            self.binanceApi.post_sell_order_profit(self.name, self.orderSize, self.profitPrice)
 
-            print("DEBUG: Sell Order ")
-            print("DEBUG: Desire profit:", self.desireProfit)
-            print("DEBUG: Leverage:", self.leverage)
-            print("DEBUG: Order size:", self.orderSize)
-            print("DEBUG: Sell at:", self.orderPrice)
-            print("DEBUG: Profit at:", self.profitPrice)
-
-        else:
-            print("ERROR: opening Sell order")
+        #
+        # self.numberTries = 1
+        # self.percentageAux = self.percentage
+        #
+        # # calculate the ordersize
+        # self.desireProfit = self.cash
+        #
+        # # self.investUSDT = self.desireProfit * self.percentageAux
+        # self.investUSDT = self.desireProfit
+        #
+        # # calculate binance min quantity
+        # self.binanceMinOrder = 6.0 / float(price)
+        #
+        # # calculate the leverage
+        # self.leverage = (self.binanceMinOrder * float(price)) / self.investUSDT
+        # if self.leverage < 1.0:
+        #     self.leverage = 1.0
+        #
+        # self.leverage = Decimal(self.leverage)
+        # self.leverage = Decimal(self.leverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
+        #
+        # self.binanceApi.set_leverage(self.name, self.leverage)
+        #
+        # # calculate again de order size
+        # self.orderSize = Decimal(self.investUSDT) * self.leverage / Decimal(price)
+        # self.orderSize = Decimal(self.orderSize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
+        #
+        # # place sell order
+        # if self.binanceApi.post_sell_order(self.name, self.orderSize):
+        #
+        #     time.sleep(2)
+        #     # get open position
+        #     positions = self.binanceApi.get_open_positions(self.name)
+        #     self.orderPrice = positions[1]
+        #
+        #     # calculate new profit price
+        #     self.profitPrice = (1.0 - self.percentageAux) * self.orderPrice  # OK
+        #     self.profitPrice = Decimal(self.profitPrice)  # OK
+        #     self.profitPrice = Decimal(self.profitPrice.quantize(Decimal(str(self.minPriceMove)), rounding=ROUND_HALF_UP))
+        #
+        #     self.lossPrice = (1.0 + self.percentageAux) * self.orderPrice
+        #     self.status = BotStatus.ORDERSELLCONTROL
+        #
+        #     self.binanceApi.post_sell_order_profit(self.name, self.orderSize, self.profitPrice)
+        #
+        #     print("DEBUG: Sell Order ")
+        #     print("DEBUG: Desire profit:", self.desireProfit)
+        #     print("DEBUG: Leverage:", self.leverage)
+        #     print("DEBUG: Order size:", self.orderSize)
+        #     print("DEBUG: Sell at:", self.orderPrice)
+        #     print("DEBUG: Profit at:", self.profitPrice)
+        #
+        # else:
+        #     print("ERROR: opening Sell order")
 
     def place_order_first_buy(self,price):
         self.numberTries = 1
@@ -149,104 +202,197 @@ class Strategy:
 
     def place_order_buy(self, price):
         # self.numberTries += 1
-        self.numberTries += 1
-        self.percentageAux = (float(price) / self.orderPrice) - 1.0
-        # self.percentageAux = self.percentageAux * 2.0
-        
-        print("A")
-        self.leverage = Decimal(self.leverage)
-        self.leverage = self.leverage * Decimal(2.0)
-        self.maxLeverage = Decimal(self.maxLeverage)
-        
-        if self.leverage > self.maxLeverage:
-            self.investUSDT = self.investUSDT * 2.0
-            self.leverage = (self.binanceMinOrder * Decimal(price)) / self.investUSDT
-            if self.leverage < 1.0:
-                self.leverage = 1.0
 
-            self.leverage = Decimal(self.leverage)
-            self.orderSize = Decimal(self.investUSDT) * self.leverage / Decimal(price)
-            self.orderSize = Decimal(self.orderSize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
+        # calculate the new percentage
+        self.percentageAux = ((float(price) / self.orderPrice) - 1.0) + 0.001
+
+        # clear all open orders
+        result = self.binanceApi.cancel_all_orders(self.name)
+        if result == False:
+            print("ERROR: canceling all orders")
         else:
-            self.orderSize = self.orderSize + self.orderSize * Decimal(2.0)
+            print("DEBUG: All orders cancelled ")
 
-        print("B")
-        # set leverage
-        self.leverage = Decimal(self.leverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
-        self.binanceApi.set_leverage(self.name, self.leverage)
+        # set new ordersize
+        self.minOrdersize = Decimal(self.minOrdersize)+ (Decimal(self.minOrdersize) * Decimal(2.0))
+        self.minOrdersize = Decimal(self.minOrdersize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
 
-        # self.orderSize = self.orderSize +  self.orderSize * Decimal(2.0)
-        # if self.orderSize < 0:
-        #     self.orderSize = self.orderSize * Decimal(-1.0)
-        print("C")
-        self.lossPrice = 0.95 * self.orderPrice
-        self.status = BotStatus.ORDERBUYCONTROL
-        
-        print("D")
+        result = self.binanceApi.post_buy_order(self.name, self.minOrdersize)
+
+        if result == False:
+            print("ERROR: Setting new buy order")
+            return False
+        else:
+            print("DEBUG: Add new order sucessfull")
+
+            # get Order price
+        result = self.binanceApi.get_open_positions(self.name)
+
+        self.orderPrice = result[1]
+
+        # calculate profit price
         self.profitPrice = (1.0 + self.percentageAux) * self.orderPrice
         self.profitPrice = Decimal(self.profitPrice)
         self.profitPrice = Decimal(self.profitPrice.quantize(Decimal(str(self.minPriceMove)), rounding=ROUND_HALF_UP))
-        
-        print("E")
-        self.binanceApi.post_buy_order(self.name, self.orderSize)
-        self.binanceApi.post_buy_order_profit(self.name, self.orderSize, self.profitPrice)
 
-        positions= self.binanceApi.get_open_positions(self.name)
-        
-        print("F")
-        self.orderPrice = Decimal(positions[1])
-        
-        print("-- Buy at", self.orderPrice)
-        print("-- Order Size:", self.orderSize)
-        print("-- Buy at", self.orderPrice)
-        print("-- Profit at:", self.profitPrice)
-        print("-----------------------------------")
+        result = self.binanceApi.post_buy_order_profit(self.name, self.orderSize, self.profitPrice)
+
+        if result == False:
+            print("ERROR: Setting new buy profit order")
+            return False
+        else:
+            print("DEBUG: Buy order profit successfull")
+            self.status = BotStatus.ORDERBUYCONTROL
+
+        #
+        # self.leverage = Decimal(self.leverage)
+        # self.leverage = self.leverage * Decimal(2.0)
+        # self.maxLeverage = Decimal(self.maxLeverage)
+        #
+        # if self.leverage > self.maxLeverage:
+        #     self.investUSDT = self.investUSDT * 2.0
+        #     self.leverage = (self.binanceMinOrder * Decimal(price)) / self.investUSDT
+        #     if self.leverage < 1.0:
+        #         self.leverage = 1.0
+        #
+        #     self.leverage = Decimal(self.leverage)
+        #     self.orderSize = Decimal(self.investUSDT) * self.leverage / Decimal(price)
+        #     self.orderSize = Decimal(self.orderSize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
+        # else:
+        #     self.orderSize = self.orderSize * Decimal(2.0)
+        #
+        # print("B")
+        # # set leverage
+        # self.leverage = Decimal(self.leverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
+        # self.binanceApi.set_leverage(self.name, self.leverage)
+        #
+        # # self.orderSize = self.orderSize +  self.orderSize * Decimal(2.0)
+        # # if self.orderSize < 0:
+        # #     self.orderSize = self.orderSize * Decimal(-1.0)
+        # print("C")
+        # self.lossPrice = 0.95 * self.orderPrice
+        # self.status = BotStatus.ORDERBUYCONTROL
+        #
+        # print("D")
+        #
+        # print("E")
+        # self.binanceApi.post_buy_order(self.name, self.orderSize)
+        #
+        #
+        # positions= self.binanceApi.get_open_positions(self.name)
+        #
+        # print("F")
+        #
+        #
+        # self.profitPrice = (1.0 + self.percentageAux) * positions[1]
+        # self.profitPrice = Decimal(self.profitPrice)
+        # self.profitPrice = Decimal(self.profitPrice.quantize(Decimal(str(self.minPriceMove)), rounding=ROUND_HALF_UP))
+        #
+        # self.binanceApi.post_buy_order_profit(self.name, self.orderSize, self.profitPrice)
+        #
+        # self.orderPrice = Decimal(positions[1])
+        # print("-- Buy at", self.orderPrice)
+        # print("-- Order Size:", self.orderSize)
+        # print("-- Buy at", self.orderPrice)
+        # print("-- Profit at:", self.profitPrice)
+        # print("-----------------------------------")
 
     def place_order_sell(self,price):
-        # self.numberTries += 1
-        self.numberTries += 1
-        self.percentageAux = 1.0 - (float(price) / self.orderPrice)
-        # self.percentageAux = self.percentageAux * 2.0
-        self.orderPrice = float(price)
+        # calculate the new percentage
 
-        self.leverage = Decimal(self.leverage)
-        self.leverage = self.leverage * Decimal(2.0)
-        self.maxLeverage = Decimal(self.maxLeverage)
-        
-        if self.leverage > self.maxLeverage:
-            self.investUSDT = self.investUSDT * 2.0
-            self.leverage = (self.binanceMinOrder * Decimal(price)) / self.investUSDT
-            if self.leverage < 1.0:
-                self.leverage = 1.0
+        self.percentageAux = (1.0 - (float(price) / self.orderPrice)) + 0.001
 
-            self.leverage = Decimal(self.leverage)
-            self.orderSize = Decimal(self.investUSDT) * self.leverage / Decimal(price)
-            self.orderSize = Decimal(self.orderSize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
+        # clear all open orders
+        result = self.binanceApi.cancel_all_orders(self.name)
+        if result == False:
+            print("ERROR: canceling all orders")
         else:
-            self.orderSize = self.orderSize + self.orderSize * Decimal(2.0)
+            print("DEBUG: All orders cancelled ")
 
-        # set leverage
-        self.leverage = Decimal(self.leverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
-        self.binanceApi.set_leverage(self.name, self.leverage)
+        # set new ordersize
+        self.minOrdersize = Decimal(self.minOrdersize) + (Decimal(self.minOrdersize) * Decimal(2.0))
+        self.minOrdersize = Decimal(self.minOrdersize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
 
-        # if self.orderSize > 0:
-        #     self.orderSize = self.orderSize * Decimal(-1.0)
+        result = self.binanceApi.post_sell_order(self.name, self.minOrdersize)
 
-        self.lossPrice = 1.05 * self.orderPrice
-        self.status = BotStatus.ORDERSELLCONTROL
+        if result == False:
+            print("ERROR: Setting new buy order")
+            return False
+        else:
+            print("DEBUG: Add new order sucessfull")
 
+            # get Order price
+        result = self.binanceApi.get_open_positions(self.name)
+
+        self.orderPrice = result[1]
+
+        # calculate profit price
         self.profitPrice = (1.0 - self.percentageAux) * self.orderPrice
         self.profitPrice = Decimal(self.profitPrice)
         self.profitPrice = Decimal(self.profitPrice.quantize(Decimal(str(self.minPriceMove)), rounding=ROUND_HALF_UP))
 
-        self.binanceApi.post_sell_order(self.name, self.orderSize)
-        self.binanceApi.post_sell_order_profit(self.name, self.orderSize, self.profitPrice)
+        result = self.binanceApi.post_sell_order_profit(self.name, self.orderSize, self.profitPrice)
 
-        print("-- Sell at", self.orderPrice)
-        print("-- Order Size:", self.orderSize)
-        print("-- Sell at", self.orderPrice)
-        print("-- Profit at:", self.profitPrice)
-        print("-----------------------------------")
+        if result == False:
+            print("ERROR: Setting new buy profit order")
+            return False
+        else:
+            print("DEBUG: Buy order profit successfull")
+            self.status = BotStatus.ORDERSELLCONTROL
+
+        # self.numberTries += 1
+        # self.percentageAux = 1.0 - (float(price) / self.orderPrice)
+        # # self.percentageAux = self.percentageAux * 2.0
+        # self.orderPrice = float(price)
+        # # close order
+        # self.binanceApi.post_sell_order(self.name, self.orderSize)
+        #
+        # self.leverage = Decimal(self.leverage)
+        # self.leverage = self.leverage * Decimal(2.0)
+        # self.maxLeverage = Decimal(self.maxLeverage)
+        #
+        # if self.leverage > self.maxLeverage:
+        #     self.investUSDT = self.investUSDT * 2.0
+        #     self.leverage = (self.binanceMinOrder * Decimal(price)) / self.investUSDT
+        #     if self.leverage < 1.0:
+        #         self.leverage = 1.0
+        #
+        #     self.leverage = Decimal(self.leverage)
+        #     self.orderSize = Decimal(self.investUSDT) * self.leverage / Decimal(price)
+        #     self.orderSize = Decimal(self.orderSize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
+        # else:
+        #     self.orderSize = self.orderSize * Decimal(2.0)
+        #
+        # # set leverage
+        # self.leverage = Decimal(self.leverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
+        # self.binanceApi.set_leverage(self.name, self.leverage)
+        #
+        # # if self.orderSize > 0:
+        # #     self.orderSize = self.orderSize * Decimal(-1.0)
+        #
+        # self.lossPrice = 1.05 * self.orderPrice
+        # self.status = BotStatus.ORDERSELLCONTROL
+        #
+        #
+        # self.binanceApi.post_sell_order(self.name, self.orderSize)
+        #
+        # positions = self.binanceApi.get_open_positions(self.name)
+        #
+        # print("F")
+        #
+        # self.profitPrice = (1.0 - self.percentageAux) * positions[1]
+        # self.profitPrice = Decimal(self.profitPrice)
+        # self.profitPrice = Decimal(self.profitPrice.quantize(Decimal(str(self.minPriceMove)), rounding=ROUND_HALF_UP))
+        #
+        # self.orderPrice = Decimal(positions[1])
+        #
+        # self.binanceApi.post_sell_order_profit(self.name, self.orderSize, self.profitPrice)
+        #
+        # print("-- Sell at", self.orderPrice)
+        # print("-- Order Size:", self.orderSize)
+        # print("-- Sell at", self.orderPrice)
+        # print("-- Profit at:", self.profitPrice)
+        # print("-----------------------------------")
 
     def process_coin_price_V2(self,price:'float' = None):
 
@@ -261,19 +407,20 @@ class Strategy:
                     self.place_order_first_sell(price)
 
                 if self.status == BotStatus.ORDERBUYCONTROL:
+                    print(float(price), self.orderPrice, (self.orderPrice * (1.0 + self.percentageAux)))
                     if float(price) <= (self.orderPrice * (1.0 - self.percentageAux)):
-                        self.status = BotStatus.PLACEORDERSELL
+                        self.place_order_sell(price)
 
                 if self.status == BotStatus.ORDERSELLCONTROL:
                     print(float(price),self.orderPrice,(self.orderPrice * (1.0 + self.percentageAux)))
                     if float(price) >= (self.orderPrice * (1.0 + self.percentageAux)):
-                        self.status = BotStatus.PLACEORDERBUY
+                        self.place_order_buy(price)
 
-                if self.status == BotStatus.PLACEORDERBUY:
-                    self.place_order_buy(price)
-
-                if self.status == BotStatus.PLACEORDERSELL:
-                    self.place_order_sell(price)
+                # if self.status == BotStatus.PLACEORDERBUY:
+                #     self.place_order_buy(price)
+                #
+                # if self.status == BotStatus.PLACEORDERSELL:
+                #     self.place_order_sell(price)
 
         # print(float(dt.close))
 

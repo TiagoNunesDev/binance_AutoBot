@@ -208,5 +208,7 @@ class binanceLib:
         except Exception as e:
             sys.stdout = sys.__stdout__
             print(e)
+            return False
         else:
             time.sleep(1)
+            return True
