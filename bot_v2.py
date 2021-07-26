@@ -220,8 +220,6 @@ class Strategy:
 
         result = self.binanceApi.post_buy_order(self.name, self.minOrdersize)
 
-        self.minOrdersize = (Decimal(self.minOrdersize) * Decimal(0.66))
-        
         if result == False:
             print("ERROR: Setting new buy order")
             return False
@@ -232,6 +230,8 @@ class Strategy:
         result = self.binanceApi.get_open_positions(self.name)
 
         self.orderPrice = result[1]
+        
+        self.minOrdersize = result[0]
         self.minOrdersize = Decimal(self.minOrdersize)
         
         # calculate profit price
