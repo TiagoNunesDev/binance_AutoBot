@@ -47,7 +47,7 @@ class Strategy:
     def place_order_first_sell(self,price):
 
         # new algorithm
-        self.percentageAux = 0.005
+        self.percentageAux = 0.0025
         self.maxLeverage = Decimal(self.maxLeverage)
         self.maxLeverage = Decimal(self.maxLeverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
 
