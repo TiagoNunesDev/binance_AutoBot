@@ -215,7 +215,7 @@ class Strategy:
 
         # set new ordersize
         #self.minOrdersize = Decimal(self.minOrdersize)+ (Decimal(self.minOrdersize) * Decimal(2.0))
-        self.minOrdersize = (Decimal(self.minOrdersize) * Decimal(2.0))
+        self.minOrdersize = (Decimal(self.minOrdersize) * Decimal(3.0))
         self.minOrdersize = Decimal(self.minOrdersize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
 
         result = self.binanceApi.post_buy_order(self.name, self.minOrdersize)
@@ -312,7 +312,7 @@ class Strategy:
 
         # set new ordersize
         #self.minOrdersize = Decimal(self.minOrdersize) + (Decimal(self.minOrdersize) * Decimal(2.0))
-        self.minOrdersize = (Decimal(self.minOrdersize) * Decimal(2.0))
+        self.minOrdersize = (Decimal(self.minOrdersize) * Decimal(3.0))
         self.minOrdersize = Decimal(self.minOrdersize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
 
         result = self.binanceApi.post_sell_order(self.name, self.minOrdersize)
