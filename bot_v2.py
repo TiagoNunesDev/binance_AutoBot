@@ -230,8 +230,11 @@ class Strategy:
         result = self.binanceApi.get_open_positions(self.name)
 
         self.orderPrice = result[1]
-        
         self.minOrdersize = result[0]
+        
+        if self.minOrdersize < 0:
+           self.minOrdersize = self.minOrdersize  * (-1.0)
+        
         self.minOrdersize = Decimal(self.minOrdersize)
         
         # calculate profit price
@@ -333,7 +336,11 @@ class Strategy:
         self.orderPrice = result[1]
         self.minOrdersize = result[0]
         
+        if self.minOrdersize < 0:
+           self.minOrdersize = self.minOrdersize  * (-1.0)
+        
         self.minOrdersize = Decimal(self.minOrdersize)
+       
 
         # calculate profit price
         self.profitPrice = (1.0 - self.percentageAux) * self.orderPrice
