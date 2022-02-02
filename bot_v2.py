@@ -47,7 +47,7 @@ class Strategy:
     def place_order_first_sell(self,price):
 
         # new algorithm
-        self.percentageAux = 0.005
+        self.percentageAux = 0.0025
         self.maxLeverage = Decimal(self.maxLeverage)
         self.maxLeverage = Decimal(self.maxLeverage.quantize(Decimal('0'), rounding=ROUND_HALF_UP))
 
@@ -214,7 +214,8 @@ class Strategy:
             print("DEBUG: All orders cancelled ")
 
         # set new ordersize
-        self.minOrdersize = Decimal(self.minOrdersize)+ (Decimal(self.minOrdersize) * Decimal(2.0))
+        #self.minOrdersize = Decimal(self.minOrdersize)+ (Decimal(self.minOrdersize) * Decimal(2.0))
+        self.minOrdersize = (Decimal(self.minOrdersize) * Decimal(3.0))
         self.minOrdersize = Decimal(self.minOrdersize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
 
         result = self.binanceApi.post_buy_order(self.name, self.minOrdersize)
@@ -229,13 +230,19 @@ class Strategy:
         result = self.binanceApi.get_open_positions(self.name)
 
         self.orderPrice = result[1]
-
+        self.minOrdersize = result[0]
+        
+        if self.minOrdersize < 0:
+           self.minOrdersize = self.minOrdersize  * (-1.0)
+        
+        self.minOrdersize = Decimal(self.minOrdersize)
+        
         # calculate profit price
         self.profitPrice = (1.0 + self.percentageAux) * self.orderPrice
         self.profitPrice = Decimal(self.profitPrice)
         self.profitPrice = Decimal(self.profitPrice.quantize(Decimal(str(self.minPriceMove)), rounding=ROUND_HALF_UP))
 
-        result = self.binanceApi.post_buy_order_profit(self.name, self.orderSize, self.profitPrice)
+        result = self.binanceApi.post_buy_order_profit(self.name, self.minOrdersize, self.profitPrice)
 
         if result == False:
             print("ERROR: Setting new buy profit order")
@@ -310,11 +317,13 @@ class Strategy:
             print("DEBUG: All orders cancelled ")
 
         # set new ordersize
-        self.minOrdersize = Decimal(self.minOrdersize) + (Decimal(self.minOrdersize) * Decimal(2.0))
+        #self.minOrdersize = Decimal(self.minOrdersize) + (Decimal(self.minOrdersize) * Decimal(2.0))
+        self.minOrdersize = (Decimal(self.minOrdersize) * Decimal(3.0))
         self.minOrdersize = Decimal(self.minOrdersize.quantize(Decimal(str(self.minTradeAmount)), rounding=ROUND_HALF_UP))
 
         result = self.binanceApi.post_sell_order(self.name, self.minOrdersize)
-
+        
+        
         if result == False:
             print("ERROR: Setting new buy order")
             return False
@@ -325,13 +334,21 @@ class Strategy:
         result = self.binanceApi.get_open_positions(self.name)
 
         self.orderPrice = result[1]
+        self.minOrdersize = result[0]
+        
+        if self.minOrdersize < 0:
+           self.minOrdersize = self.minOrdersize  * (-1.0)
+        
+        self.minOrdersize = Decimal(self.minOrdersize)
+       
 
         # calculate profit price
         self.profitPrice = (1.0 - self.percentageAux) * self.orderPrice
         self.profitPrice = Decimal(self.profitPrice)
         self.profitPrice = Decimal(self.profitPrice.quantize(Decimal(str(self.minPriceMove)), rounding=ROUND_HALF_UP))
 
-        result = self.binanceApi.post_sell_order_profit(self.name, self.orderSize, self.profitPrice)
+     
+        result = self.binanceApi.post_sell_order_profit(self.name, self.minOrdersize, self.profitPrice)
 
         if result == False:
             print("ERROR: Setting new buy profit order")
