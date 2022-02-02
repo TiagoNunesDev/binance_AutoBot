@@ -17,19 +17,20 @@ import logging
 import json
 # from bot import BinanceApi
 from bot_v2 import *
+import requests
 import csv
 
 app = Flask(__name__)
 cors = CORS(app, resource={r"/*":{"origins": "*"}})
 
-key = os.environ.get('API_KEY')
-secret = os.environ.get('API_SECRET')
-coin = os.environ.get('COIN')
-minimalQtd = os.environ.get('MINIMAL_COIN_BUY')
-# minimalProfit = os.environ.get('MINIMAL_PROFIT_USD')
-# leverage = os.environ.get('COIN_LEVERAGE')
-minimalMove = os.environ.get('COIN_MIN_MOVE')
-maxLeverage = os.environ.get('MAX_LEVERAGE')
+# key = os.environ.get('API_KEY')
+# secret = os.environ.get('API_SECRET')
+# coin = os.environ.get('COIN')
+# minimalQtd = os.environ.get('MINIMAL_COIN_BUY')
+# # minimalProfit = os.environ.get('MINIMAL_PROFIT_USD')
+# # leverage = os.environ.get('COIN_LEVERAGE')
+# minimalMove = os.environ.get('COIN_MIN_MOVE')
+# maxLeverage = os.environ.get('MAX_LEVERAGE')
 
 # minimalQtd = 0.1
 # minimalMove = 0.001
@@ -42,28 +43,58 @@ maxLeverage = os.environ.get('MAX_LEVERAGE')
 # if status == BotStatus.BUY:
 #     print(status)
 
+class candle:
+  def __init__(self, timestamp,open,high,low,close, change):
+    self.timestamp  = timestamp
+    self.low = low
+    self.high = high
+    self.close = close
+    self.open = open
+    self.change = change
+
+
+class Order:
+    def __init__(self,type,open,size):
+        self.type = type
+        self.open = open
+        self.size = size
+
+
+
+class Account:
+    def __init__(self):
+        self.money = 50.0
+        self.lostTrades = 0
+        self.winTrades = 0
+
+
+def get_last_candles(name):
+    url = 'https://api.binance.com/api/v3/klines?symbol=' + name + '&interval=5m&limit=2'
+    data = requests.get(url).json()
+    return data
+
 # --------------------------- Tesnet API Keys -------------------------------------------
 
-g_api_key = '9ed2810f070aa3c9378af0a828cdc46c6a20a347f9c80004e37a26f5d373e3b5'
-g_secret_key = 'c2340bebf086e113b6e3bd52f5bd17ccb201649a8f2b82804dec531a7fb16b0f'
-
-# --------------------------- Init Client -------------------------------------------
-try:
-    # request_client = RequestClient(api_key=key, secret_key=secret, url='https://testnet.binancefuture.com/')
-    request_client = RequestClient(api_key=key, secret_key=secret,  url='https://fapi.binance.com')
-    # request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key, url='https://testnet.binancefuture.com/')
-except Exception as e:
-    print("ERROR: Connecting to client")
-else:
-    print("INFO: Connected to client")
-
-api = binanceLib(client = request_client)
-
-balance = api.get_usdt_balance()
-balance = balance * 0.035
-print("BALANCE:",balance)
-
-bot = Strategy(name=coin, percentage=0.005 , balance=balance,minTradeAmount=minimalQtd, minPriceMove=minimalMove,maxLev=maxLeverage,binanceApi = api)
+# g_api_key = '9ed2810f070aa3c9378af0a828cdc46c6a20a347f9c80004e37a26f5d373e3b5'
+# g_secret_key = 'c2340bebf086e113b6e3bd52f5bd17ccb201649a8f2b82804dec531a7fb16b0f'
+#
+# # --------------------------- Init Client -------------------------------------------
+# try:
+#      request_client = RequestClient(api_key=key, secret_key=secret, url='https://testnet.binancefuture.com/')
+#     #request_client = RequestClient(api_key=key, secret_key=secret,  url='https://fapi.binance.com')
+#     # request_client = RequestClient(api_key=g_api_key, secret_key=g_secret_key, url='https://testnet.binancefuture.com/')
+# except Exception as e:
+#     print("ERROR: Connecting to client")
+# else:
+#     print("INFO: Connected to client")
+#
+# api = binanceLib(client = request_client)
+#
+# balance = api.get_usdt_balance()
+# balance = balance * 0.035
+# print("BALANCE:",balance)
+#
+# bot = Strategy(name=coin, percentage=0.005 , balance=balance,minTradeAmount=minimalQtd, minPriceMove=minimalMove,maxLev=maxLeverage,binanceApi = api)
 
 
 # try:
@@ -194,6 +225,113 @@ def main():
     # 1. reverse(s): returns the reverse of the input string
     # 2. print(s): prints the string representation of the input object
 
+def run_bot():
+    # # get first candles
+
+    print("Crypto bot monitoring Started")
+    status = 0
+    orders = Order(0, 0, 0)
+    account = Account()
+
+    # get data from coin
+    data = get_last_candles('SOLUSDT')
+
+    # get the last coin price
+    change = 1 - float(data[0][2]), float(data[0][3])
+    lastCandle = candle(int(data[0][0]), float(data[0][1]), float(data[0][2]), float(data[0][3]), float(data[0][4]),
+                        change)
+
+    while (1):
+
+        data = get_last_candles('SOLUSDT')  # get last candle
+
+        time.sleep(0.1)  # wait for 500ms
+
+        if lastCandle.timestamp != int(data[0][0]):  # this compare the previus timestamp with new timestamp
+
+            if status == 2:  ## check if is a win or lost trade
+                if orders.type == 'BUY':
+                    if orders.open < float(data[1][4]):  # win trade
+                        print("Trade win at timestamp", data[1][0], "At price", float(data[1][4]))
+                        account.winTrades += 1
+                        account.money = float(account.money) - (float(account.money) * 0.0004)
+                        account.money = float(account.money) + (orders.size * (float(data[1][4]) - orders.open))
+                    else:  # lost trade
+                        account.lostTrades += 1
+                        account.money = float(account.money) - (float(account.money) * 0.0004)
+                        account.money = float(account.money) - (orders.size * (orders.open - float(data[1][4])))
+                        print("Trade lost  at timestamp", data[1][0], "At price", float(data[1][4]))
+
+                elif orders.type == 'SELL':
+
+                    if orders.open > float(data[1][4]):  # win trade
+                        print("Trade win at timestamp", data[1][0], "At price", float(data[1][4]))
+                        account.winTrades += 1
+                        account.money = float(account.money) - (float(account.money) * 0.0004)
+                        account.money = float(account.money) + (orders.size * (orders.open - float(data[1][4])))
+
+                    else:  # lost trade
+                        account.lostTrades += 1
+                        account.money = float(account.money) - (float(account.money) * 0.0004)
+                        account.money = float(account.money) - (orders.size * (float(data[1][4]) - orders.open))
+                        print("Trade lost  at timestamp", data[1][0], "At price", float(data[1][4]))
+
+            change = 1 - float(data[0][2]), float(data[0][3])
+            lastCandle = candle(int(data[0][0]), float(data[0][1]), float(data[0][2]), float(data[0][3]),
+                                float(data[0][4]), change)
+            # enable buying/sell control
+            status = 1
+
+            print("Account money:", account.money, " Lost:", account.lostTrades, " Win:", account.winTrades)
+
+        if status == 1:  # waiting fot buying
+            if lastCandle.close > lastCandle.open:  # green candle
+                calc = lastCandle.close + ((lastCandle.high - lastCandle.close) / 2.0)
+                if float(data[1][4]) > lastCandle.high:  # if current price is bigger then the precius high
+                    orders = Order("BUY", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
+                    account.money = float(account.money) - (float(account.money) * 0.0004)
+                    status = 2
+                    print("Order buy placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
+                          orders.size)
+                elif float(data[1][4]) < lastCandle.low:
+                    orders = Order("SELL", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
+                    account.money = float(account.money) - (float(account.money) * 0.0004)
+                    status = 2
+                    print("Order sell placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
+                          orders.size)
+
+            elif lastCandle.close < lastCandle.open:  # red candle
+                calc = lastCandle.close - ((lastCandle.close - lastCandle.low) / 2.0)
+                if float(data[1][4]) < lastCandle.low:
+                    orders = Order("SELL", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
+                    account.money = float(account.money) - (float(account.money) * 0.0004)
+                    status = 2
+                    print("Order Sell placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
+                          orders.size)
+                elif float(data[1][4]) > lastCandle.high:
+                    orders = Order("BUY", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
+                    account.money = float(account.money) - (float(account.money) * 0.0004)
+                    status = 2
+                    print("Order Buy placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
+                          orders.size)
+
+        elif status == 2:  # control buying or selling
+            ## check for stop loss control
+            if orders.type == "SELL":
+                if float(data[1][4]) > lastCandle.high:
+                    account.lostTrades += 1
+                    account.money = float(account.money) - (float(account.money) * 0.0004)
+                    account.money = float(account.money) - (orders.size * (lastCandle.high - lastCandle.low))
+                    status = 0
+                    print("Trade lost stop loss filled, Timestamp", data[1][0], "At price", float(data[1][4]))
+
+            elif orders.type == 'BUY':
+                if float(data[1][4]) < lastCandle.low:
+                    account.lostTrades += 1
+                    account.money = float(account.money) - (float(account.money) * 0.0004)
+                    account.money = float(account.money) - (orders.size * (lastCandle.high - lastCandle.low))
+                    status = 0
+                    print("Trade lost stop loss filled, Timestamp", data[1][0], "At price", float(data[1][4]))
 
 if __name__ == '__main__':
 
@@ -235,10 +373,11 @@ if __name__ == '__main__':
     #     strategy.process_coin_price(dt.close)
     #     # strategy.process_coin_price_V2(dt)
 
-    p = Process(target=record_loop_v2)
+    p = Process(target=run_bot)
     p.start()
     main()
     p.join()
+    # main()
     # p = Process(target=record_loop)
     # p.start()
     # main()
