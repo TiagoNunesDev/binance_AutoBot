@@ -286,14 +286,18 @@ def run_bot():
 
         if status == 1:  # waiting fot buying
             if lastCandle.close > lastCandle.open:  # green candle
-                calc = lastCandle.close + ((lastCandle.high - lastCandle.close) / 2.0)
-                if float(data[1][4]) > lastCandle.high:  # if current price is bigger then the precius high
+                 # validade candles wicks
+                topWick = lastCandle.high - lastCandle.close
+                lowerWick = lastCandle.open - lastCandle.low
+                body = lastCandle.close - lastCandle.open
+                
+                if float(data[1][4]) > lastCandle.high and topWick < (body * 0.6) :  # if current price is bigger then the precius high
                     orders = Order("BUY", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
                     account.money = float(account.money) - (float(account.money) * 0.0004)
                     status = 2
                     print("Order buy placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
                           orders.size)
-                elif float(data[1][4]) < lastCandle.low:
+                elif float(data[1][4]) < lastCandle.low and lowerWick < (body * 0.6) :
                     orders = Order("SELL", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
                     account.money = float(account.money) - (float(account.money) * 0.0004)
                     status = 2
@@ -301,14 +305,18 @@ def run_bot():
                           orders.size)
 
             elif lastCandle.close < lastCandle.open:  # red candle
-                calc = lastCandle.close - ((lastCandle.close - lastCandle.low) / 2.0)
-                if float(data[1][4]) < lastCandle.low:
+                # validade candles wicks
+                topWick = lastCandle.high - lastCandle.open
+                lowerWick = lastCandle.close - lastCandle.low
+                body = lastCandle.open - lastCandle.close
+                
+                if float(data[1][4]) < lastCandle.low and lowerWick < (body * 0.6):
                     orders = Order("SELL", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
                     account.money = float(account.money) - (float(account.money) * 0.0004)
                     status = 2
                     print("Order Sell placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
                           orders.size)
-                elif float(data[1][4]) > lastCandle.high:
+                elif float(data[1][4]) > lastCandle.high and topWick < (body * 0.6):
                     orders = Order("BUY", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
                     account.money = float(account.money) - (float(account.money) * 0.0004)
                     status = 2
