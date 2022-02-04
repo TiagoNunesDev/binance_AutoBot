@@ -69,7 +69,7 @@ class Account:
 
 
 def get_last_candles(name):
-    url = 'https://api.binance.com/api/v3/klines?symbol=' + name + '&interval=5m&limit=2'
+    url = 'https://api.binance.com/api/v3/klines?symbol=' + name + '&interval=1m&limit=2'
     data = requests.get(url).json()
     return data
 
