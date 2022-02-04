@@ -297,12 +297,12 @@ def run_bot():
                     status = 2
                     print("Order buy placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
                           orders.size)
-                elif float(data[1][4]) < lastCandle.low and lowerWick < (body * 0.6) :
-                    orders = Order("SELL", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
-                    account.money = float(account.money) - (float(account.money) * 0.0004)
-                    status = 2
-                    print("Order sell placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
-                          orders.size)
+               # elif float(data[1][4]) < lastCandle.low and lowerWick < (body * 0.6) :
+               #     orders = Order("SELL", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
+               #     account.money = float(account.money) - (float(account.money) * 0.0004)
+               #     status = 2
+               #     print("Order sell placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
+               #           orders.size)
 
             elif lastCandle.close < lastCandle.open:  # red candle
                 # validade candles wicks
@@ -316,12 +316,12 @@ def run_bot():
                     status = 2
                     print("Order Sell placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
                           orders.size)
-                elif float(data[1][4]) > lastCandle.high and topWick < (body * 0.6):
-                    orders = Order("BUY", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
-                    account.money = float(account.money) - (float(account.money) * 0.0004)
-                    status = 2
-                    print("Order Buy placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
-                          orders.size)
+              #  elif float(data[1][4]) > lastCandle.high and topWick < (body * 0.6):
+              #      orders = Order("BUY", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
+              #      account.money = float(account.money) - (float(account.money) * 0.0004)
+              #      status = 2
+              #      print("Order Buy placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
+              #            orders.size)
 
         elif status == 2:  # control buying or selling
             ## check for stop loss control
