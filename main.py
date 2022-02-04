@@ -326,7 +326,7 @@ def run_bot():
         elif status == 2:  # control buying or selling
             ## check for stop loss control
             if orders.type == "SELL":
-                if float(data[1][4]) > lastCandle.high - ((lastCandle.high - lastCandle.low)/2.0):
+                if float(data[1][4]) > lastCandle.high :
                     account.lostTrades += 1
                     account.money = float(account.money) - (float(account.money) * 0.0004)
                     account.money = float(account.money) - (orders.size * (lastCandle.high - lastCandle.low))
@@ -334,7 +334,7 @@ def run_bot():
                     print("Trade lost stop loss filled, Timestamp", data[1][0], "At price", float(data[1][4]))
 
             elif orders.type == 'BUY':
-                if float(data[1][4]) < lastCandle.low + ((lastCandle.high - lastCandle.low)/2.0):
+                if float(data[1][4]) < lastCandle.low :
                     account.lostTrades += 1
                     account.money = float(account.money) - (float(account.money) * 0.0004)
                     account.money = float(account.money) - (orders.size * (lastCandle.high - lastCandle.low))
