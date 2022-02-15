@@ -69,7 +69,7 @@ class Account:
 
 
 def get_last_candles(name):
-    url = 'https://api.binance.com/api/v3/klines?symbol=' + name + '&interval=15m&limit=2'
+    url = 'https://api.binance.com/api/v3/klines?symbol=' + name + '&interval=5m&limit=2'
     data = requests.get(url).json()
     return data
 
@@ -234,7 +234,7 @@ def run_bot():
     account = Account()
 
     # get data from coin
-    data = get_last_candles('SOLUSDT')
+    data = get_last_candles('XRPUSDT')
 
     # get the last coin price
     change = 1 - float(data[0][2]), float(data[0][3])
