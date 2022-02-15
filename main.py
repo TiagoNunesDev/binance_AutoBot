@@ -242,7 +242,6 @@ def run_bot():
                         change)
 
     while (1):
-
         data = get_last_candles('XRPUSDT')  # get last candle
 
         time.sleep(0.1)  # wait for 500ms
