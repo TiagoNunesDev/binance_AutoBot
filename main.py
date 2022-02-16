@@ -337,7 +337,7 @@ def run_bot():
                     account.money = float(account.money) + ((orders.size/2.0) * ((lastCandle.high - lastCandle.low)/2.0))
                     orders.size = orders.size / 2.0
                     halfsell = 1
-                    print("Trade sell halfed, Timestamp", data[1][0], "At price", float(data[1][4]))
+                    print("Trade sell halfed, Timestamp", data[1][0], "At price", float(data[1][4]), "account money",account.money)
 
 
             elif orders.type == 'BUY':
@@ -352,7 +352,7 @@ def run_bot():
                     account.money = float(account.money) + ((orders.size/2.0) * ((lastCandle.high - lastCandle.low)/2.0))
                     orders.size = orders.size / 2.0
                     halfsell = 1
-                    print("Trade sell halfed, Timestamp", data[1][0], "At price", float(data[1][4]))
+                    print("Trade sell halfed, Timestamp", data[1][0], "At price", float(data[1][4]), "account money",account.money)
 
 if __name__ == '__main__':
 
