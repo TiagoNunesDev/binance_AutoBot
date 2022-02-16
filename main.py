@@ -253,11 +253,11 @@ def run_bot():
                     if orders.open < float(data[1][4]):  # win trade
                         print("Trade win at timestamp", data[1][0], "At price", float(data[1][4]))
                         account.winTrades += 1
-                        account.money = float(account.money) - (float(account.money) * 0.0004)
+                        #account.money = float(account.money) - (float(account.money) * 0.0004)
                         account.money = float(account.money) + (orders.size * (float(data[1][4]) - orders.open))
                     else:  # lost trade
                         account.lostTrades += 1
-                        account.money = float(account.money) - (float(account.money) * 0.0004)
+                      #  account.money = float(account.money) - (float(account.money) * 0.0004)
                         account.money = float(account.money) - (orders.size * (orders.open - float(data[1][4])))
                         print("Trade lost  at timestamp", data[1][0], "At price", float(data[1][4]))
 
@@ -266,12 +266,12 @@ def run_bot():
                     if orders.open > float(data[1][4]):  # win trade
                         print("Trade win at timestamp", data[1][0], "At price", float(data[1][4]))
                         account.winTrades += 1
-                        account.money = float(account.money) - (float(account.money) * 0.0004)
+                       # account.money = float(account.money) - (float(account.money) * 0.0004)
                         account.money = float(account.money) + (orders.size * (orders.open - float(data[1][4])))
 
                     else:  # lost trade
                         account.lostTrades += 1
-                        account.money = float(account.money) - (float(account.money) * 0.0004)
+                        #account.money = float(account.money) - (float(account.money) * 0.0004)
                         account.money = float(account.money) - (orders.size * (float(data[1][4]) - orders.open))
                         print("Trade lost  at timestamp", data[1][0], "At price", float(data[1][4]))
 
@@ -292,7 +292,7 @@ def run_bot():
                 
                 if float(data[1][4]) > lastCandle.high and topWick < (body * 0.6) :  # if current price is bigger then the precius high
                     orders = Order("BUY", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
-                    account.money = float(account.money) - (float(account.money) * 0.0004)
+                    #account.money = float(account.money) - (float(account.money) * 0.0004)
                     status = 2
                     print("Order buy placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
                           orders.size)
@@ -311,7 +311,7 @@ def run_bot():
                 
                 if float(data[1][4]) < lastCandle.low and lowerWick < (body * 0.6):
                     orders = Order("SELL", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
-                    account.money = float(account.money) - (float(account.money) * 0.0004)
+                   # account.money = float(account.money) - (float(account.money) * 0.0004)
                     status = 2
                     print("Order Sell placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
                           orders.size)
@@ -327,7 +327,7 @@ def run_bot():
             if orders.type == "SELL":
                 if float(data[1][4]) > lastCandle.high :
                     account.lostTrades += 1
-                    account.money = float(account.money) - (float(account.money) * 0.0004)
+                    #account.money = float(account.money) - (float(account.money) * 0.0004)
                     account.money = float(account.money) - (orders.size * (lastCandle.high - lastCandle.low))
                     status = 0
                     print("Trade lost stop loss filled, Timestamp", data[1][0], "At price", float(data[1][4]))
@@ -335,7 +335,7 @@ def run_bot():
             elif orders.type == 'BUY':
                 if float(data[1][4]) < lastCandle.low :
                     account.lostTrades += 1
-                    account.money = float(account.money) - (float(account.money) * 0.0004)
+                   # account.money = float(account.money) - (float(account.money) * 0.0004)
                     account.money = float(account.money) - (orders.size * (lastCandle.high - lastCandle.low))
                     status = 0
                     print("Trade lost stop loss filled, Timestamp", data[1][0], "At price", float(data[1][4]))
