@@ -230,6 +230,7 @@ def run_bot():
 
     print("Crypto bot monitoring Started")
     status = 0
+    halfsell = 0
     orders = Order(0, 0, 0)
     account = Account()
 
@@ -247,7 +248,7 @@ def run_bot():
         time.sleep(0.1)  # wait for 500ms
 
         if lastCandle.timestamp != int(data[0][0]):  # this compare the previus timestamp with new timestamp
-
+            halfsell = 0
             if status == 2:  ## check if is a win or lost trade
                 if orders.type == 'BUY':
                     if orders.open < float(data[1][4]):  # win trade
@@ -332,6 +333,13 @@ def run_bot():
                     status = 0
                     print("Trade lost stop loss filled, Timestamp", data[1][0], "At price", float(data[1][4]))
 
+                if float(data[1][4]) <= lastCandle.low - ((lastCandle.high - lastCandle.low)/2.0) and halfsell == 0:
+                    account.money = float(account.money) + ((orders.size/2.0) * ((lastCandle.high - lastCandle.low)/2.0))
+                    orders.size = orders.size / 2.0
+                    halfsell = 1
+                    print("Trade sell halfed, Timestamp", data[1][0], "At price", float(data[1][4]))
+
+
             elif orders.type == 'BUY':
                 if float(data[1][4]) < lastCandle.low :
                     account.lostTrades += 1
@@ -339,6 +347,12 @@ def run_bot():
                     account.money = float(account.money) - (orders.size * (lastCandle.high - lastCandle.low))
                     status = 0
                     print("Trade lost stop loss filled, Timestamp", data[1][0], "At price", float(data[1][4]))
+
+                if float(data[1][4]) >= lastCandle.high + ((lastCandle.high - lastCandle.low)/2.0) and halfsell == 0:
+                    account.money = float(account.money) + ((orders.size/2.0) * ((lastCandle.high - lastCandle.low)/2.0))
+                    orders.size = orders.size / 2.0
+                    halfsell = 1
+                    print("Trade sell halfed, Timestamp", data[1][0], "At price", float(data[1][4]))
 
 if __name__ == '__main__':
 
