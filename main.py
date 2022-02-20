@@ -70,10 +70,11 @@ class Account:
 
 def get_last_candles(name):
     try:
-        url = 'https://api.binance.com/api/v3/klines?symbol=' + name + '&interval=1m&limit=2'
+        url = 'https://api.binance.com/api/v3/klines?symbol=' + name + '&interval=1h&limit=2'
         data = requests.get(url).json()
     except Exception as e:
         print(e)
+        return False
     else:
         return data
 
@@ -250,113 +251,113 @@ def run_bot():
         data = get_last_candles('XRPUSDT')  # get last candle
 
         time.sleep(0.1)  # wait for 500ms
+        if data != False:
+            if lastCandle.timestamp != int(data[0][0]):  # this compare the previus timestamp with new timestamp
+                halfsell = 0
+                if status == 2:  ## check if is a win or lost trade
+                    if orders.type == 'BUY':
+                        if orders.open < float(data[1][4]):  # win trade
+                            print("Trade win at timestamp", data[1][0], "At price", float(data[1][4]))
+                            account.winTrades += 1
+                            #account.money = float(account.money) - (float(account.money) * 0.0004)
+                            account.money = float(account.money) + (orders.size * (float(data[1][4]) - orders.open))
+                        else:  # lost trade
+                            account.lostTrades += 1
+                          #  account.money = float(account.money) - (float(account.money) * 0.0004)
+                            account.money = float(account.money) - (orders.size * (orders.open - float(data[1][4])))
+                            print("Trade lost  at timestamp", data[1][0], "At price", float(data[1][4]))
 
-        if lastCandle.timestamp != int(data[0][0]):  # this compare the previus timestamp with new timestamp
-            halfsell = 0
-            if status == 2:  ## check if is a win or lost trade
-                if orders.type == 'BUY':
-                    if orders.open < float(data[1][4]):  # win trade
-                        print("Trade win at timestamp", data[1][0], "At price", float(data[1][4]))
-                        account.winTrades += 1
+                    elif orders.type == 'SELL':
+
+                        if orders.open > float(data[1][4]):  # win trade
+                            print("Trade win at timestamp", data[1][0], "At price", float(data[1][4]))
+                            account.winTrades += 1
+                           # account.money = float(account.money) - (float(account.money) * 0.0004)
+                            account.money = float(account.money) + (orders.size * (orders.open - float(data[1][4])))
+
+                        else:  # lost trade
+                            account.lostTrades += 1
+                            #account.money = float(account.money) - (float(account.money) * 0.0004)
+                            account.money = float(account.money) - (orders.size * (float(data[1][4]) - orders.open))
+                            print("Trade lost  at timestamp", data[1][0], "At price", float(data[1][4]))
+
+                change = 1 - float(data[0][2]), float(data[0][3])
+                lastCandle = candle(int(data[0][0]), float(data[0][1]), float(data[0][2]), float(data[0][3]),
+                                    float(data[0][4]), change)
+                # enable buying/sell control
+                status = 1
+
+                print("Account money:", account.money, " Lost:", account.lostTrades, " Win:", account.winTrades)
+
+            if status == 1:  # waiting fot buying
+                if lastCandle.close > lastCandle.open:  # green candle
+                     # validade candles wicks
+                    topWick = lastCandle.high - lastCandle.close
+                    lowerWick = lastCandle.open - lastCandle.low
+                    body = lastCandle.close - lastCandle.open
+
+                    if float(data[1][4]) > lastCandle.high and topWick < (body * 0.6) :  # if current price is bigger then the precius high
+                        orders = Order("BUY", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
                         #account.money = float(account.money) - (float(account.money) * 0.0004)
-                        account.money = float(account.money) + (orders.size * (float(data[1][4]) - orders.open))
-                    else:  # lost trade
-                        account.lostTrades += 1
-                      #  account.money = float(account.money) - (float(account.money) * 0.0004)
-                        account.money = float(account.money) - (orders.size * (orders.open - float(data[1][4])))
-                        print("Trade lost  at timestamp", data[1][0], "At price", float(data[1][4]))
+                        status = 2
+                        print("Order buy placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
+                              orders.size)
+                   # elif float(data[1][4]) < lastCandle.low and lowerWick < (body * 0.6) :
+                   #     orders = Order("SELL", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
+                   #     account.money = float(account.money) - (float(account.money) * 0.0004)
+                   #     status = 2
+                   #     print("Order sell placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
+                   #           orders.size)
 
-                elif orders.type == 'SELL':
+                elif lastCandle.close < lastCandle.open:  # red candle
+                    # validade candles wicks
+                    topWick = lastCandle.high - lastCandle.open
+                    lowerWick = lastCandle.close - lastCandle.low
+                    body = lastCandle.open - lastCandle.close
 
-                    if orders.open > float(data[1][4]):  # win trade
-                        print("Trade win at timestamp", data[1][0], "At price", float(data[1][4]))
-                        account.winTrades += 1
+                    if float(data[1][4]) < lastCandle.low and lowerWick < (body * 0.6):
+                        orders = Order("SELL", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
                        # account.money = float(account.money) - (float(account.money) * 0.0004)
-                        account.money = float(account.money) + (orders.size * (orders.open - float(data[1][4])))
+                        status = 2
+                        print("Order Sell placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
+                              orders.size)
+                  #  elif float(data[1][4]) > lastCandle.high and topWick < (body * 0.6):
+                  #      orders = Order("BUY", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
+                  #      account.money = float(account.money) - (float(account.money) * 0.0004)
+                  #      status = 2
+                  #      print("Order Buy placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
+                  #            orders.size)
 
-                    else:  # lost trade
+            elif status == 2:  # control buying or selling
+                ## check for stop loss control
+                if orders.type == "SELL":
+                    if float(data[1][4]) > lastCandle.high :
                         account.lostTrades += 1
                         #account.money = float(account.money) - (float(account.money) * 0.0004)
-                        account.money = float(account.money) - (orders.size * (float(data[1][4]) - orders.open))
-                        print("Trade lost  at timestamp", data[1][0], "At price", float(data[1][4]))
+                        account.money = float(account.money) - (orders.size * (lastCandle.high - lastCandle.low))
+                        status = 0
+                        print("Trade lost stop loss filled, Timestamp", data[1][0], "At price", float(data[1][4]))
 
-            change = 1 - float(data[0][2]), float(data[0][3])
-            lastCandle = candle(int(data[0][0]), float(data[0][1]), float(data[0][2]), float(data[0][3]),
-                                float(data[0][4]), change)
-            # enable buying/sell control
-            status = 1
-
-            print("Account money:", account.money, " Lost:", account.lostTrades, " Win:", account.winTrades)
-
-        if status == 1:  # waiting fot buying
-            if lastCandle.close > lastCandle.open:  # green candle
-                 # validade candles wicks
-                topWick = lastCandle.high - lastCandle.close
-                lowerWick = lastCandle.open - lastCandle.low
-                body = lastCandle.close - lastCandle.open
-                
-                if float(data[1][4]) > lastCandle.high and topWick < (body * 0.6) :  # if current price is bigger then the precius high
-                    orders = Order("BUY", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
-                    #account.money = float(account.money) - (float(account.money) * 0.0004)
-                    status = 2
-                    print("Order buy placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
-                          orders.size)
-               # elif float(data[1][4]) < lastCandle.low and lowerWick < (body * 0.6) :
-               #     orders = Order("SELL", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
-               #     account.money = float(account.money) - (float(account.money) * 0.0004)
-               #     status = 2
-               #     print("Order sell placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
-               #           orders.size)
-
-            elif lastCandle.close < lastCandle.open:  # red candle
-                # validade candles wicks
-                topWick = lastCandle.high - lastCandle.open
-                lowerWick = lastCandle.close - lastCandle.low
-                body = lastCandle.open - lastCandle.close
-                
-                if float(data[1][4]) < lastCandle.low and lowerWick < (body * 0.6):
-                    orders = Order("SELL", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
-                   # account.money = float(account.money) - (float(account.money) * 0.0004)
-                    status = 2
-                    print("Order Sell placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
-                          orders.size)
-              #  elif float(data[1][4]) > lastCandle.high and topWick < (body * 0.6):
-              #      orders = Order("BUY", float(data[1][4]), (account.money / float(data[1][4])) * 2.0)
-              #      account.money = float(account.money) - (float(account.money) * 0.0004)
-              #      status = 2
-              #      print("Order Buy placed at timestamp", data[1][0], "At price", float(data[1][4]), "size:",
-              #            orders.size)
-
-        elif status == 2:  # control buying or selling
-            ## check for stop loss control
-            if orders.type == "SELL":
-                if float(data[1][4]) > lastCandle.high :
-                    account.lostTrades += 1
-                    #account.money = float(account.money) - (float(account.money) * 0.0004)
-                    account.money = float(account.money) - (orders.size * (lastCandle.high - lastCandle.low))
-                    status = 0
-                    print("Trade lost stop loss filled, Timestamp", data[1][0], "At price", float(data[1][4]))
-
-                if float(data[1][4]) <= lastCandle.low - ((lastCandle.high - lastCandle.low)/2.0) and halfsell == 0:
-                    account.money = float(account.money) + ((orders.size/2.0) * ((lastCandle.high - lastCandle.low)/2.0))
-                    orders.size = orders.size / 2.0
-                    halfsell = 1
-                    print("Trade sell halfed, Timestamp", data[1][0], "At price", float(data[1][4]), "account money",account.money)
+                    if float(data[1][4]) <= lastCandle.low - ((lastCandle.high - lastCandle.low)/2.0) and halfsell == 0:
+                        account.money = float(account.money) + ((orders.size/2.0) * ((lastCandle.high - lastCandle.low)/2.0))
+                        orders.size = orders.size / 2.0
+                        halfsell = 1
+                        print("Trade sell halfed, Timestamp", data[1][0], "At price", float(data[1][4]), "account money",account.money)
 
 
-            elif orders.type == 'BUY':
-                if float(data[1][4]) < lastCandle.low :
-                    account.lostTrades += 1
-                   # account.money = float(account.money) - (float(account.money) * 0.0004)
-                    account.money = float(account.money) - (orders.size * (lastCandle.high - lastCandle.low))
-                    status = 0
-                    print("Trade lost stop loss filled, Timestamp", data[1][0], "At price", float(data[1][4]))
+                elif orders.type == 'BUY':
+                    if float(data[1][4]) < lastCandle.low :
+                        account.lostTrades += 1
+                       # account.money = float(account.money) - (float(account.money) * 0.0004)
+                        account.money = float(account.money) - (orders.size * (lastCandle.high - lastCandle.low))
+                        status = 0
+                        print("Trade lost stop loss filled, Timestamp", data[1][0], "At price", float(data[1][4]))
 
-                if float(data[1][4]) >= lastCandle.high + ((lastCandle.high - lastCandle.low)/2.0) and halfsell == 0:
-                    account.money = float(account.money) + ((orders.size/2.0) * ((lastCandle.high - lastCandle.low)/2.0))
-                    orders.size = orders.size / 2.0
-                    halfsell = 1
-                    print("Trade sell halfed, Timestamp", data[1][0], "At price", float(data[1][4]), "account money",account.money)
+                    if float(data[1][4]) >= lastCandle.high + ((lastCandle.high - lastCandle.low)/2.0) and halfsell == 0:
+                        account.money = float(account.money) + ((orders.size/2.0) * ((lastCandle.high - lastCandle.low)/2.0))
+                        orders.size = orders.size / 2.0
+                        halfsell = 1
+                        print("Trade sell halfed, Timestamp", data[1][0], "At price", float(data[1][4]), "account money",account.money)
 
 if __name__ == '__main__':
 
