@@ -70,7 +70,7 @@ class Account:
 
 def get_last_candles(name):
     try:
-        url = 'https://api.binance.com/api/v3/klines?symbol=' + name + '&interval=5m&limit=2'
+        url = 'https://api.binance.com/api/v3/klines?symbol=' + name + '&interval=1m&limit=2'
         data = requests.get(url).json()
     except Exception as e:
         print(e)
