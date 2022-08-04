@@ -63,14 +63,14 @@ class Order:
 
 class Account:
     def __init__(self):
-        self.money = 50.0
+        self.money = 5.0
         self.lostTrades = 0
         self.winTrades = 0
 
 
 def get_last_candles(name):
     try:
-        url = 'https://api.binance.com/api/v3/klines?symbol=' + name + '&interval=1m&limit=2'
+        url = 'https://api.binance.com/api/v3/klines?symbol=' + name + '&interval=15m&limit=2'
         data = requests.get(url).json()
     except Exception as e:
         print(e)
