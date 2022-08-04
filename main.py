@@ -240,7 +240,7 @@ def run_bot():
     account = Account()
 
     # get data from coin
-    data = get_last_candles('XRPUSDT')
+    data = get_last_candles('CTKUSDT')
 
     # get the last coin price
     change = 1 - float(data[0][2]), float(data[0][3])
@@ -248,7 +248,7 @@ def run_bot():
                         change)
 
     while (1):
-        data = get_last_candles('XRPUSDT')  # get last candle
+        data = get_last_candles('CTKUSDT')  # get last candle
 
         time.sleep(0.1)  # wait for 500ms
         if data != False:
